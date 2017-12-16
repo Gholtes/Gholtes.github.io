@@ -1,0 +1,64 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Grant Holtes</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="css/main.css" />
+	</head>
+	<body>
+
+
+		<!-- Wrapper -->
+			<div id="wrapper" class="divided">
+					<!-- subheading for projects -->
+					<section class="wrapper style2 align-left" id="projects">
+						<div class="inner">
+							<div class="inner align-center">
+								<h2>AI, Connect 4, and finally being good at this game</h2>
+							</div>
+							<br>
+
+							<p>Tiring of being mercilessly beaten by my friends, I decided to seek a nuclear solution and satisfy my curiosity surrounding AI. </p>
+				      <p>The AI is implemented using a reclusive mini-max algorithm which seeks to maximise the payoff of any possible move. This works by iterating through all possible games, selecting the rationally optimal moves for each player to make until the game is over, then selecting the move that has the highest rational payoff for the computer. </p>
+
+							<div class="image">
+								<img src="images/AI_1.jpg" alt="" width="60%" style="display: block; margin: auto;"/>
+							</div>
+
+				      <p>This technique creates an unbeatable player, as the algorithm will force a draw before accepting defeat. </p>
+				      <p>While this works for simple games such as tic-tac-toe with 362,880 possible games, Connect 4 provides a greater challenge as it has 3.1x10^35 possible games, a computationally unrealistic task. To remedy this basic “tree pruning” is used which limits how many moves in advance the AI searches. This limit is then increased as the number of possible games decreases, yielding a relatively constant processing or <i>thinking</i> delay.</p>
+
+							<div class="image">
+								<img src="images/AI_2.jpg" alt="" width="60%" style="display: block; margin: auto;"/>
+							</div>
+
+				      <p>Not forgetting the task at hand, this AI is deployed in a messenger bot, allowing those around me to be humiliated by this silicon overlord. </p>
+
+							<div class="image">
+								<img src="images/AI_3.jpg" alt="" width="60%" style="display: block; margin: auto;"/>
+							</div>
+
+
+						</div>
+						<div class="inner align-center" >
+							<form action="index.html">
+								<input class="button" type="submit" value="Back" />
+							</form>
+						</div>
+					</section>
+
+
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="js/jquery.min.js"></script>
+			<script src="js/jquery.scrollex.min.js"></script>
+			<script src="js/jquery.scrolly.min.js"></script>
+			<script src="js/skel.min.js"></script>
+			<script src="js/util.js"></script>
+			<script src="js/main.js"></script>
+
+	</body>
+</html>

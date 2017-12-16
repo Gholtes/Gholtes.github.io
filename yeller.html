@@ -1,0 +1,94 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Grant Holtes</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="css/main.css" />
+	</head>
+	<body>
+
+
+		<!-- Wrapper -->
+			<div id="wrapper" class="divided">
+					<!-- subheading for projects -->
+					<section class="wrapper style2 align-left" id="projects">
+						<div class="inner">
+							<div class="inner align-center">
+								<h2>The worst thing I’ve ever made</h2>
+							</div>
+							<br>
+
+							<div class="image">
+								<img src="images/yell_1.jpg" alt="" width="60%" style="display: block; margin: auto;"/>
+							</div>
+				      <p><b>What:</b> A messenger bot the reads out any message sent to it with a text to speech generator, allowing my friends to yell at each other. Anonymously. It went downhill just as fast as you would expect. </p>
+							<div class="image">
+								<img src="images/yell_2.jpg" alt="" width="60%" style="display: block; margin: auto;"/>
+							</div>
+				      <p><b>Why:</b> Why not.</p>
+				      <p><b>How:</b> The messenger bot server is implemented in python and the fbmq library, the meaty bits of the code are shown below</p>
+				      <pre><code>@page.handle_message
+def message_handler(event):
+    sender_id = event.sender_id
+    message = event.message_text
+
+
+    user_profile = page.get_user_profile(sender_id)
+    first = user_profile["first_name"]
+    last = user_profile["last_name"]
+
+    reply = "Thanks " + first
+
+    page.send(sender_id, reply)
+
+    t = Thread(target=say_message, args=(message, ))
+    t.start()
+    # this bit is super important, we need to actually return something
+    # otherwise Facebook keeps retrying (it can be anything as long as it
+    # isn't a 404 error, causing messages to be repeated FOREVER
+    return "success, but we could really put anything here"
+
+def say_message(message):
+    if len(message) < 250 and len(message.split()) < 40: #Make sure its not about to read a whole book..
+        output = "say -r 150 \"" + message + "\""
+        os.system(output)</code></pre>
+      <p> The tricky bit is getting the webhook to authenticate <i>and</i> function as intended. I'd try the following:
+      <pre><code>@app.route('/webhook', methods=['GET'])
+def verify():
+    #Check the token
+    return request.args['YOUR TOKEN HERE']
+
+@app.route('/webhook', methods=['POST'])
+def webhook():
+  page.handle_webhook(request.get_data(as_text=True))
+  return "ok"</code></pre>
+				      <p>This is run on my mac with ngrok, which lets the command line to take care of the text to speech.</p>
+				      <code> $say -r 250 'all hope is lost now'</code>
+							<br>
+				      <p>For the love of God don't build this abomination</p>
+
+
+
+						</div>
+						<div class="inner align-center" >
+							<form action="index.html">
+								<input class="button" type="submit" value="Back" />
+							</form>
+						</div>
+					</section>
+
+
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="js/jquery.min.js"></script>
+			<script src="js/jquery.scrollex.min.js"></script>
+			<script src="js/jquery.scrolly.min.js"></script>
+			<script src="js/skel.min.js"></script>
+			<script src="js/util.js"></script>
+			<script src="js/main.js"></script>
+
+	</body>
+</html>
