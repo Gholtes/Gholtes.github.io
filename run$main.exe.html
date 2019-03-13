@@ -1,7 +1,7 @@
 <html>
 <body>
-  <p> DECODED URL: </p>
-  <p id="demo"></p>
+  <p> Redirecting you to: </p>
+  <p id="decodedURL"></p>
 
   <script>
     var decode_dict = {
@@ -92,7 +92,7 @@
         decoded_url += decode_dict[encoded_url_array[i]];
       }
     window.location = decoded_url;
-    document.getElementById("demo").innerHTML = decoded_url;
+    document.getElementById("decodedURL").innerHTML = decoded_url;
   </script>
 
 </body>

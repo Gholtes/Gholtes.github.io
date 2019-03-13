@@ -1,104 +1,156 @@
+<!DOCTYPE HTML>
 <html>
-<body>
-<p> shitty url encoder </p>
-<form id = "1" method="post">
-  <input type="text" name="url" id="url" value="" />
-</form>
-<button onclick="encode()">Encode</button>
-  <p id="demo"></p>
+	<head>
+		<title>Grant Holtes</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="css/main.css" />
+	</head>
+	<body>
 
-  <script>
-  function encode(){
-    var encode_dict = {
-      '0': '0',
-  '/': '1',
-  '?': '2',
-  '@': '3',
-  ':': '4',
-  ';': '5',
-  '*': '6',
-  '=': '7',
-  '&': '8',
-  '%': '9',
-  ',': 'a',
-  '#': 'b',
-  '+': 'c',
-  '~': 'd',
-  '_': 'e',
-  '-': 'f',
-  '.': 'g',
-  'Z': 'h',
-  'Y': 'i',
-  'X': 'j',
-  'W': 'k',
-  'V': 'l',
-  'U': 'm',
-  'T': 'n',
-  'S': 'o',
-  'R': 'p',
-  'Q': 'q',
-  'P': 'r',
-  'O': 's',
-  'N': 't',
-  'M': 'u',
-  'L': 'v',
-  'K': 'w',
-  'J': 'x',
-  'I': 'y',
-  'H': 'z',
-  'G': 'A',
-  'F': 'B',
-  'E': 'C',
-  'D': 'D',
-  'C': 'E',
-  'B': 'F',
-  'A': 'G',
-  'z': 'H',
-  'y': 'I',
-  'x': 'J',
-  'w': 'K',
-  'v': 'L',
-  'u': 'M',
-  't': 'N',
-  's': 'O',
-  'r': 'P',
-  'q': 'Q',
-  'p': 'R',
-  'o': 'S',
-  'n': 'T',
-  'm': 'U',
-  'l': 'V',
-  'k': 'W',
-  'j': 'X',
-  'i': 'Y',
-  'h': 'Z',
-  'g': '.',
-  'f': '-',
-  'e': '_',
-  'd': '~',
-  'c': '+',
-  'b': '#',
-  'a': ',',
-  '9': '%',
-  '8': '&',
-  '7': '=',
-  '6': '*',
-  '5': ';',
-  '4': ':',
-  '3': '@',
-  '2': '?',
-  '1': '/'};
-    var input_url_string = document.getElementById("url").value;
-    var split_url_string = input_url_string.split("");
-    var encoded_url = "http://www.grantholtes.com/run$main.exe.html?";
-    var i;
-      for (i = 0; i < split_url_string.length; i++) {
-        encoded_url += encode_dict[split_url_string[i]];
-      }
-    document.getElementById("demo").innerHTML = encoded_url;
-    //file:///Users/grantholtes/Desktop/run$main.exe.html?ZNNR411KKKg.P,TNZSVN_Og+SU
-  }
-  </script>
 
-</body>
+		<!-- Wrapper -->
+			<div id="wrapper" class="divided">
+					<!-- subheading for projects -->
+					<section class="wrapper style2 align-left" id="projects">
+						<div class="inner">
+							<div class="inner align-center">
+								<h2>URL Sketchificator</h2>
+							<!-- <form id = "1" method="post">
+							  <input type="text" name="url" id="url" value="" />
+							</form>
+							<button onclick="encode()">Encode</button>
+							  <p id="demo"></p> -->
+
+  						<div class="inner align-center" >
+								<p> Enter a full url to sketchify! </p>
+  							<form id = "1" method="post">
+									<input type="text" name="url" id="url" value="" />
+									<br>
+  								<input class="button" onclick="encode()" value="Sketchify"/>
+  							</form>
+								<p id="demo"></p>
+  						</div>
+
+					</section>
+					<section class="wrapper style2 align-left" id="projects">
+						<div class="inner">
+							<div class="inner align-center">
+								<h2>How does this work?</h2>
+							</div>
+
+								<p>This sloppy url redirect is built with just HTML and Javascript.</p>
+								<p>This page you are on right now uses a little bit of JS to transform the link the user input into a string of complete garbage, then slap that into the arguments of the page grantholtes.com/run$main.exe.html.</p>
+								<p> When you visit the link above, it digests the garbage in the arguments and turns it back into the useful link that you originally input, then redirects you there. I mean, it’s hardly useful, it makes links longer and potentially blacklisted by Facebook. But it was rainy today, so have this, the product of 2h of my life. </p>
+						<div class="inner align-center" >
+							<form action="index.html">
+								<input class="button" type="submit" value="Back" />
+							</form>
+						</div>
+					</section>
+
+			</div>
+
+		<!-- Scripts -->
+
+			<script src="js/jquery.min.js"></script>
+			<script src="js/jquery.scrollex.min.js"></script>
+			<script src="js/jquery.scrolly.min.js"></script>
+			<script src="js/skel.min.js"></script>
+			<script src="js/util.js"></script>
+			<script src="js/main.js"></script>
+			<script>
+		  function encode(){
+		    var encode_dict = {
+		      '0': '0',
+		  '/': '1',
+		  '?': '2',
+		  '@': '3',
+		  ':': '4',
+		  ';': '5',
+		  '*': '6',
+		  '=': '7',
+		  '&': '8',
+		  '%': '9',
+		  ',': 'a',
+		  '#': 'b',
+		  '+': 'c',
+		  '~': 'd',
+		  '_': 'e',
+		  '-': 'f',
+		  '.': 'g',
+		  'Z': 'h',
+		  'Y': 'i',
+		  'X': 'j',
+		  'W': 'k',
+		  'V': 'l',
+		  'U': 'm',
+		  'T': 'n',
+		  'S': 'o',
+		  'R': 'p',
+		  'Q': 'q',
+		  'P': 'r',
+		  'O': 's',
+		  'N': 't',
+		  'M': 'u',
+		  'L': 'v',
+		  'K': 'w',
+		  'J': 'x',
+		  'I': 'y',
+		  'H': 'z',
+		  'G': 'A',
+		  'F': 'B',
+		  'E': 'C',
+		  'D': 'D',
+		  'C': 'E',
+		  'B': 'F',
+		  'A': 'G',
+		  'z': 'H',
+		  'y': 'I',
+		  'x': 'J',
+		  'w': 'K',
+		  'v': 'L',
+		  'u': 'M',
+		  't': 'N',
+		  's': 'O',
+		  'r': 'P',
+		  'q': 'Q',
+		  'p': 'R',
+		  'o': 'S',
+		  'n': 'T',
+		  'm': 'U',
+		  'l': 'V',
+		  'k': 'W',
+		  'j': 'X',
+		  'i': 'Y',
+		  'h': 'Z',
+		  'g': '.',
+		  'f': '-',
+		  'e': '_',
+		  'd': '~',
+		  'c': '+',
+		  'b': '#',
+		  'a': ',',
+		  '9': '%',
+		  '8': '&',
+		  '7': '=',
+		  '6': '*',
+		  '5': ';',
+		  '4': ':',
+		  '3': '@',
+		  '2': '?',
+		  '1': '/'};
+		    var input_url_string = document.getElementById("url").value;
+		    var split_url_string = input_url_string.split("");
+		    var encoded_url = "http://www.grantholtes.com/run$main.exe.html?";
+		    var i;
+		      for (i = 0; i < split_url_string.length; i++) {
+		        encoded_url += encode_dict[split_url_string[i]];
+		      }
+		    document.getElementById("demo").innerHTML = encoded_url;
+		    //file:///Users/grantholtes/Desktop/run$main.exe.html?ZNNR411KKKg.P,TNZSVN_Og+SU
+		  }
+		  </script>
+
+	</body>
 </html>
