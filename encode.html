@@ -1,0 +1,104 @@
+<html>
+<body>
+<p> shitty url encoder </p>
+<form id = "1" method="post">
+  <input type="text" name="url" id="url" value="" />
+</form>
+<button onclick="encode()">Encode</button>
+  <p id="demo"></p>
+
+  <script>
+  function encode(){
+    var encode_dict = {
+      '0': '0',
+  '/': '1',
+  '?': '2',
+  '@': '3',
+  ':': '4',
+  ';': '5',
+  '*': '6',
+  '=': '7',
+  '&': '8',
+  '%': '9',
+  ',': 'a',
+  '#': 'b',
+  '+': 'c',
+  '~': 'd',
+  '_': 'e',
+  '-': 'f',
+  '.': 'g',
+  'Z': 'h',
+  'Y': 'i',
+  'X': 'j',
+  'W': 'k',
+  'V': 'l',
+  'U': 'm',
+  'T': 'n',
+  'S': 'o',
+  'R': 'p',
+  'Q': 'q',
+  'P': 'r',
+  'O': 's',
+  'N': 't',
+  'M': 'u',
+  'L': 'v',
+  'K': 'w',
+  'J': 'x',
+  'I': 'y',
+  'H': 'z',
+  'G': 'A',
+  'F': 'B',
+  'E': 'C',
+  'D': 'D',
+  'C': 'E',
+  'B': 'F',
+  'A': 'G',
+  'z': 'H',
+  'y': 'I',
+  'x': 'J',
+  'w': 'K',
+  'v': 'L',
+  'u': 'M',
+  't': 'N',
+  's': 'O',
+  'r': 'P',
+  'q': 'Q',
+  'p': 'R',
+  'o': 'S',
+  'n': 'T',
+  'm': 'U',
+  'l': 'V',
+  'k': 'W',
+  'j': 'X',
+  'i': 'Y',
+  'h': 'Z',
+  'g': '.',
+  'f': '-',
+  'e': '_',
+  'd': '~',
+  'c': '+',
+  'b': '#',
+  'a': ',',
+  '9': '%',
+  '8': '&',
+  '7': '=',
+  '6': '*',
+  '5': ';',
+  '4': ':',
+  '3': '@',
+  '2': '?',
+  '1': '/'};
+    var input_url_string = document.getElementById("url").value;
+    var split_url_string = input_url_string.split("");
+    var encoded_url = "http://www.grantholtes.com/run$main.exe.html?";
+    var i;
+      for (i = 0; i < split_url_string.length; i++) {
+        encoded_url += encode_dict[split_url_string[i]];
+      }
+    document.getElementById("demo").innerHTML = encoded_url;
+    //file:///Users/grantholtes/Desktop/run$main.exe.html?ZNNR411KKKg.P,TNZSVN_Og+SU
+  }
+  </script>
+
+</body>
+</html>

