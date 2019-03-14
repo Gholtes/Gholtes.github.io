@@ -91,7 +91,7 @@
     for (i = 0; i < encoded_url_array.length; i++) {
       decoded_url += decode_dict[encoded_url_array[i]];
     }
-    document.getElementById("decodedURL").innerHTML = decoded_url;
+
     // if (decoded_url.slice(1:7) == "https://" || decoded_url.slice(1:6) == "http://") {
     //   decoded_url = decoded_url;
     // }
@@ -103,7 +103,7 @@
     //     decoded_url = "http://www." + decoded_url;
     //   }
     // }
-    document.getElementById("decodedURL").innerHTML = decoded_url.slice(1:3);
+    document.getElementById("decodedURL").innerHTML = decoded_url;
     // window.location = decoded_url;
   </script>
 
