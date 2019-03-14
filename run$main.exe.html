@@ -92,19 +92,19 @@
       decoded_url += decode_dict[encoded_url_array[i]];
     }
     document.getElementById("decodedURL").innerHTML = decoded_url;
-    if (decoded_url.slice(1:7) == "https://" || decoded_url.slice(1:6) == "http://") {
-      decoded_url = decoded_url;
-    }
-    else {
-      if (decoded_url.slice(1:3)=="www."){
-        decoded_url = "http://" + decoded_url;
-      }
-      else {
-        decoded_url = "http://www." + decoded_url;
-      }
-    }
-    document.getElementById("decodedURL").innerHTML = decoded_url;
-    window.location = decoded_url;
+    // if (decoded_url.slice(1:7) == "https://" || decoded_url.slice(1:6) == "http://") {
+    //   decoded_url = decoded_url;
+    // }
+    // else {
+    //   if (decoded_url.slice(1:3)=="www."){
+    //     decoded_url = "http://" + decoded_url;
+    //   }
+    //   else {
+    //     decoded_url = "http://www." + decoded_url;
+    //   }
+    // }
+    document.getElementById("decodedURL").innerHTML = decoded_url.slice(1:3);
+    // window.location = decoded_url;
   </script>
 
 </body>
