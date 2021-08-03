@@ -9,6 +9,7 @@ body {
 	/* font-family: "Roboto"; */
 	font-family: "Open Sans", "Helvetica", "Arial", sans-serif;
 	color: #555;	
+	background: #fafafa;
 }
 
 h1,
@@ -50,7 +51,8 @@ pre {
 
 body {
 	line-height: 1.5;
-	padding: 4em 1em;
+	/* padding: 4em 1em; */
+	padding: 1em 2em;
 	margin: 0 auto;
 	max-width: 50em;
 }
@@ -69,3 +71,16 @@ pre {
   padding: 1em;
 }
 
+table{width:100%;}
+tr { 
+  display: flex;
+  flex-wrap: wrap;
+  width:100%;
+}
+td {
+  width: 50%;
+  box-sizing:border-box;
+}
+@media screen and (max-width:50em) {
+  td{width:100%;}
+}
