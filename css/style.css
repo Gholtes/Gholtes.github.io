@@ -71,7 +71,9 @@ pre {
   padding: 1em;
 }
 
-table{width:100%;}
+table{
+	width:100%;
+}
 tr { 
   display: flex;
   flex-wrap: wrap;
@@ -80,7 +82,9 @@ tr {
 td {
   width: 50%;
   box-sizing:border-box;
+  padding-right: 2em;
 }
+
 @media screen and (max-width:50em) {
   td{width:100%;}
 }
