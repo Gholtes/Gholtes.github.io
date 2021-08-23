@@ -42,7 +42,7 @@
               <br> <br>
               One approach explore here is to assume (falsely) that all of the proposed bike paths exists and can be used. The bike lane network is transformed into a graph, and all cycling commuter’s journeys are then simulated over the network as a shortest path problem. The number of times each section in the network is used is repressed as the <b>thickness</b> of the section in the map.
               <br> <br>
-              The individual commutes are modelled as point to point based on place of work and place of residence data from the 2016 census, with start and end coordinates sampled from within the SA2 regions that each individual reported and exact locations were not available (for some very understandable privacy reasons). This only includes individuals who reported cycling as their mode of transport, so fails to include those that would switch to cycling from another mode of transport.
+              The individual commutes are modelled as point to point based on place of work and place of residence data from the 2016 census, with start and end coordinates sampled from within the regions that each individual reported as exact locations were not available (for some very understandable privacy reasons). This only includes individuals who reported cycling as their mode of transport, so fails to include those that would switch to cycling from another mode of transport.
               <br> <br>
               The false assumption that all lanes are built is based on the fact that most of the proposed routes are along existing roads that are used by cyclists despite that lack of dedicated infrastructure, as seen by the number of reported accidents along these routes. This allows each proposed section’s marginal usage to be estimated by simulating the entire complete network, rather than having to simulate every possible combination of built and unbuilt bike lanes which would require considerable computation.
             </div>          
@@ -58,6 +58,6 @@
 
       
 
-  <script type="text/javascript" src="main.js"></script></body>
+  </body>
   <!-- Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>. -->
 </html>
