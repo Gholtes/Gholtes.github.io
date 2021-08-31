@@ -10,7 +10,7 @@ const scope = "playlist-modify-public"
 //Constants 
 const AUTH_BASE_URL = 'https://accounts.spotify.com/authorize';
 const API_ENDPOINT = 'https://api.spotify.com/v1/';
-const PLAYLIST_ENDPOINT = "me/playlists?limit=3"
+const PLAYLIST_ENDPOINT = "me/playlists?limit=5"; //set number of playlists here
 function AUDIOANALYSIS_ENDPOINT(trackIDs) {
 	tracIDstr = ""; //TODO paginate this to a max of 90 songs to keep HTTP requests under 2048 chars
 	for (let i = 0; i < trackIDs.length; i++) {
@@ -78,21 +78,27 @@ function reorderPlaylist() {
 		return reorderedTracks
 		
 		*/
-		let uriList = [];
+		let uriList = []; 
 		relativeOrder = [];
 		let n = tracks.length-1;
+		for (let i = 0; i < tracks.length; i++) {
+			tracks[i]["used"] = false;
+		}
 		
-		song = tracks[0];
+		let startIndex = getRandomInt(0, n);
+		song = tracks[startIndex];
 		uriList.push(song["uri"]);
 		song["used"] = true; 
+
 		var distance;
 		var minDistance = 9999999999;
-		var nearestSong;
-		var nearestSongIndex = 0;
-		relativeOrder.push(0); //used to map new order to tracks array without sorting
-		
 
-		console.log(tracks);
+		var nearestSong;
+		var nearestSongIndex = startIndex;
+
+		relativeOrder.push(startIndex); //used to map new order to tracks array without sorting
+		
+		// console.log(tracks);
 
 		for (let i = 1; i < tracks.length; i++) {
 			for (let j = 0; j < tracks.length; j++) {
@@ -122,7 +128,7 @@ function reorderPlaylist() {
 
 	solver.then(function (uriList) {
 		reordered = true; //allow visualisation
-		console.log(uriList);
+		// console.log(uriList);
 		replaceTracks(uriList, playlist_id) //Pass to reorder
 	}, function (error) {
 		console.log(error);
@@ -188,7 +194,6 @@ function fetchTrackAnalysis(trackIDs) {
 
 		//create used attribute, log position
 		for (let i = 0; i < tracks.length; i++) {
-			tracks[i]["used"] = false;
 			visX.push(tracks[i]["analysis"][varX]);
 			visY.push(tracks[i]["analysis"][varY]);
 			visZ.push(tracks[i]["analysis"][varZ]);
@@ -206,7 +211,7 @@ function fetchPlaylistTracks(button_id) {
 	ACCESS_TOKEN = currentQueryParameters.get('access_token');
 
 	playlist_id = playlists[button_id]["id"];
-	console.log(playlist_id);
+	// console.log(playlist_id);
 	TRACKS_ENDPOINT_ID = TRACKS_ENDPOINT(playlist_id);
 
 	const fetchOptions = {
@@ -265,18 +270,20 @@ function fetchPlaylists(nextPlaylistPageURL = "") {
 		previousPlaylistPage = json["previous"];
 		playlists = json["items"];
 		renderPlaylists(playlists);
-		console.log(json);
+		// console.log(json);
 	}).catch(function (error) {
 		console.log(error);
 	}); 
 }
 
 function renderPlaylists(playlists) {
-	console.log(playlists);
+	// console.log(playlists);
 	 //Set playlists
 	 document.getElementById("playlist0").innerHTML = playlists[0]["name"];
 	 document.getElementById("playlist1").innerHTML = playlists[1]["name"];
 	 document.getElementById("playlist2").innerHTML = playlists[2]["name"];
+	 document.getElementById("playlist3").innerHTML = playlists[3]["name"];
+	 document.getElementById("playlist4").innerHTML = playlists[4]["name"];
 }
 
 function updateProfileInformation(json) {
@@ -299,7 +306,7 @@ function fetchProfileInformation() {
 	fetch(API_ENDPOINT, fetchOptions).then(function (response) {
 		return response.json();
 	}).then(function (json) {
-		console.log(json);
+		// console.log(json);
 		updateProfileInformation(json);
 	}).catch(function (error) {
 		console.log(error);
@@ -411,6 +418,13 @@ function draw() {
 	}
 }
 
+//UTILS
+
+function getRandomInt(min, max) {
+	min = Math.ceil(min);
+	max = Math.floor(max);
+	return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
+  }
 
 // function getFormData(formId) {
 // 	const form = document.getElementById(formId);
