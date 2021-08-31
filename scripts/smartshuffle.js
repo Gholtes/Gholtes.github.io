@@ -3,7 +3,8 @@
 
 //App Specific
 const client_id = "f76433fcadb3482cbe90b168aca171b6";
-const login_redirect_route = "http://localhost:8000/";
+// const login_redirect_route = "http://localhost:8000/";
+const login_redirect_route = "http://www.grantholtes.com/smartshuffle";
 const scope = "playlist-modify-public"
 
 //Constants 
