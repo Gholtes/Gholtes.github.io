@@ -384,9 +384,11 @@ function draw() {
 	stroke(songPointsCol);
 
 	if (reordered) {
-		stroke([0,0,255]);
+		
+		let inc = Math.round(255 / n);
 		let x1, y1, z1;
 		for (var i = 0; i < n; i++) {
+			stroke([0,255 - i*inc,i*inc]);
 			tracksIndex = relativeOrder[i]
 			push();
 			x = map(visX[tracksIndex], minX, maxX, -boxSz, boxSz);
