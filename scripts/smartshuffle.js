@@ -3,8 +3,8 @@
 
 //App Specific
 const client_id = "f76433fcadb3482cbe90b168aca171b6";
-// const login_redirect_route = "http://localhost:8000/";
-const login_redirect_route = "http://www.grantholtes.com/smartshuffle";
+const login_redirect_route = "http://localhost:8000/";
+// const login_redirect_route = "http://www.grantholtes.com/smartshuffle";
 const scope = "playlist-modify-public"
 
 //Constants 
@@ -40,6 +40,7 @@ var trackIDs;
 var reorderedURIs;
 var trackAnalysis;
 var nextPlaylistPage = "";
+var previousPlaylistPage = "";
 var trackString = "";
 var visX = [], visY = [], visZ = [];
 const varX = "tempo", varY = "energy", varZ = "key";
@@ -261,8 +262,10 @@ function fetchPlaylists(nextPlaylistPageURL = "") {
 		return response.json();
 	}).then(function (json) {
 		nextPlaylistPage = json["next"];
+		previousPlaylistPage = json["previous"];
 		playlists = json["items"];
 		renderPlaylists(playlists);
+		console.log(json);
 	}).catch(function (error) {
 		console.log(error);
 	}); 
@@ -334,8 +337,6 @@ function draw() {
 	background(backgroundCol);
 	rotateY(frameCount * 0.01)
 	n = visX.length-1;
-	console.log(visX);
-	console.log(n);
 
 	stroke(cubeLineCol);
 
@@ -375,7 +376,6 @@ function draw() {
 
 	stroke(songPointsCol);
 
-	console.log(reordered);
 	if (reordered) {
 		stroke([0,0,255]);
 		let x1, y1, z1;

@@ -35,51 +35,62 @@
 
             <br><br>
 
-            <a id="loginLink">Login</a>
+            <a id="loginLink" class="loginbutton" >Login</a>
 
             <br><br>
 
             <form>  
-                <input type = "button" onclick = "fetchPlaylists()" value = "Load my playlists">   
+                <input type = "button" class="button" onclick = "fetchPlaylists()" value = "Load my playlists">   
             </form>    
 
             <table>
                 <tr> 
-                    <th>
+                    <td>
                         <form>  
-                            <input type = "button" onclick = "fetchPlaylistTracks(0)" value = "load song data">   
+                            <input type = "button" class="playlistbutton"  onclick = "fetchPlaylistTracks(0)" value = "Select >>">   
                         </form> 
-                    </th> 
-                    <th id="playlist0"></th>
+                    </td> 
+                    <td id="playlist0"></td>
                 </tr>
 
                 <tr>
-                    <th>
+                    <td>
                         <form>  
-                            <input type = "button" onclick = "fetchPlaylistTracks(1)" value = "load song data">   
+                            <input type = "button" class="playlistbutton"  onclick = "fetchPlaylistTracks(1)" value = "Select >>">   
                         </form> 
-                    </th> 
-                    <th id="playlist1"></th>
+                    </td> 
+                    <td id="playlist1"></td>
                 </tr>
 
                 <tr>
-                    <th>
+                    <td>
                             <form>  
-                                <input type = "button" onclick = "fetchPlaylistTracks(2)" value = "load song data">   
+                                <input type = "button" class="playlistbutton" onclick = "fetchPlaylistTracks(2)" value = "Select >>">   
                             </form> 
-                    </th> 
-                    <th id="playlist2"></th>
+                    </td> 
+                    <td id="playlist2"></td>
                 </tr>
                     
             </table>
 
-            <form>  
-                <input type = "button" onclick = "fetchPlaylists(nextPlaylistPage)" value = "Load more...">   
-            </form> 
+            <table>
+                <tr> 
+                    <td>
+                        <form>  
+                            <input type = "button" class="playlistbutton" onclick = "fetchPlaylists(previousPlaylistPage)" value = "< Previous">   
+                        </form> 
+                    </td>
+                    <td>
+                        <form>  
+                            <input type = "button" class="playlistbutton" onclick = "fetchPlaylists(nextPlaylistPage)" value = "Next >">   
+                        </form> 
+                    </td> 
+                </tr>
+            </table>
 
             <br>
             <form>  
-                <input type = "button" onclick = "reorderPlaylist()" value = "Reorder">   
+                <input type = "button" class="reorderbutton" onclick = "reorderPlaylist()" value = "Reorder">   
             </form> 
             <br>
         </div>
