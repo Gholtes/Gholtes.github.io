@@ -383,10 +383,10 @@ function draw() {
 
 	stroke(songPointsCol);
 
+	let inc = Math.round(255 / n);
+	let x1, y1, z1;
+
 	if (reordered) {
-		
-		let inc = Math.round(255 / n);
-		let x1, y1, z1;
 		for (var i = 0; i < n; i++) {
 			stroke([0,255 - i*inc,i*inc]);
 			tracksIndex = relativeOrder[i]
@@ -407,15 +407,24 @@ function draw() {
 				
 		}
 	} else {
+		console.log("no order")
 		for (var i = 0; i < n; i++) {
+			// stroke([255,i*inc, 0]);
+			stroke([0,255 - i*inc,i*inc]);
 			push();
 			x = map(visX[i], minX, maxX, -boxSz, boxSz);
 			y = map(visY[i], minY, maxY, -boxSz, boxSz);
 			z = map(visZ[i], minZ, maxZ, -boxSz, boxSz);
 			translate(x,y,z);
 			sphere(boxSz / 50, 8);
-			//labels
 			pop();	
+			//Lines
+			if (i > 0) {
+				line(x, y, z, x1, y1, z1);
+			}
+			x1 = x;
+			y1 = y;
+			z1 = z;
 		}
 	}
 }
