@@ -47,6 +47,11 @@ const varX = "tempo", varY = "energy", varZ = "key";
 var reordered = false;
 var relativeOrder = []
 
+//Logo
+visX = [0,-6,-6,-1,-6,-6,0,5,5,6,5,5,1,5,5,6,5,5,0,0];
+visY = [1,6,4,0,-4,-6,-1,-6,-6.5,-5,-3.5,-4,0,4,3.5,5,6.5,6,1,1];
+visZ = [0,-6,-6,-1,-6,-6,0,5,5,6,5,5,1,5,5,6,5,5,0,0];
+
 function reorderPlaylist() {
 	//Define solver promise
 	var solver = new Promise( function(resolve, reject) {
