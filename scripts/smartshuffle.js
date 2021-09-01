@@ -318,6 +318,7 @@ function fetchProfileInformation() {
 var boxSz;
 var x,y,z;
 var label;
+var fontSize;
 backgroundCol = [0,0,0];
 cubeLineCol = [255,255,255];
 songPointsCol = [0,255,0];
@@ -337,7 +338,8 @@ function setup() {
 	boxSz = Math.round(Math.min(height, width) / 4); //scale by bit to ensure that the cube fits even on diagonal
 
 	textFont(inconsolata);
-  	textSize(Math.round(boxSz/10));
+	fontSize = Math.round(boxSz/10);
+  	textSize(fontSize);
 }
 
 function draw() {
@@ -369,9 +371,13 @@ function draw() {
 	line(boxSz, boxSz, -boxSz, boxSz, boxSz, boxSz);
 
 	//labels
+	fill([255,255,255]);
 	label = varX + "/ " + varY + "/ " + varZ + "/ ";
-	text(label, -boxSz, -boxSz);
-
+	text(label, -boxSz, -boxSz-fontSize);
+	fill([0,255,0]);
+	text("start/", -boxSz, -boxSz);
+	fill([0,0,255]);
+	text("end/", -boxSz+fontSize*4, -boxSz);
 	// Points
 
 	maxX = Math.max(...visX);
@@ -407,7 +413,6 @@ function draw() {
 				
 		}
 	} else {
-		console.log("no order")
 		for (var i = 0; i < n; i++) {
 			// stroke([255,i*inc, 0]);
 			stroke([0,255 - i*inc,i*inc]);
