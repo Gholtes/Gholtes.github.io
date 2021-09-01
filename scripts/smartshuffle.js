@@ -334,7 +334,7 @@ function setup() {
 	var height = window.innerHeight-10;
 	var myCanvas = createCanvas(width, height, WEBGL);
     myCanvas.parent("graphic");
-	frameRate(12);
+	frameRate(24);
 	boxSz = Math.round(Math.min(height, width) / 4); //scale by bit to ensure that the cube fits even on diagonal
 
 	textFont(inconsolata);
