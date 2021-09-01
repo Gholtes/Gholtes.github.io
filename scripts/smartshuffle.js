@@ -48,9 +48,11 @@ var reordered = false;
 var relativeOrder = []
 
 //Logo
-visX = [0,-6,-6,-1,-6,-6,0,5,5,6,5,5,1,5,5,6,5,5,0,0];
-visY = [1,6,4,0,-4,-6,-1,-6,-6.5,-5,-3.5,-4,0,4,3.5,5,6.5,6,1,1];
-visZ = [0,-6,-6,-1,-6,-6,0,5,5,6,5,5,1,5,5,6,5,5,0,0];
+visX = [0,-6,-6,-1,-6,-6,0,5,5,6,5,5,1,5,5,6,5,5,0];
+visY = [1,6,4,0,-4,-6,-1,-6,-6.5,-5,-3.5,-4,0,4,3.5,5,6.5,6,1];
+visZ = [0,-6,-6,-1,-6,-6,0,5,5,6,5,5,1,5,5,6,5,5,0];
+
+// SOLVER
 
 function reorderPlaylist() {
 	//Define solver promise
@@ -141,6 +143,7 @@ function reorderPlaylist() {
 
 }
 
+// API REQUESTS
 
 function getCurrentQueryParameters(delimiter = '#') {
 	// the access_token is passed back in a URL fragment, not a query string
@@ -281,16 +284,6 @@ function fetchPlaylists(nextPlaylistPageURL = "") {
 	}); 
 }
 
-function renderPlaylists(playlists) {
-	// console.log(playlists);
-	 //Set playlists
-	 document.getElementById("playlist0").innerHTML = playlists[0]["name"];
-	 document.getElementById("playlist1").innerHTML = playlists[1]["name"];
-	 document.getElementById("playlist2").innerHTML = playlists[2]["name"];
-	 document.getElementById("playlist3").innerHTML = playlists[3]["name"];
-	 document.getElementById("playlist4").innerHTML = playlists[4]["name"];
-}
-
 function updateProfileInformation(json) {
 	const infoString = `username: ${json.id} has ${json.followers.total} follower(s) on Spotify`;
 	const profileInfoElement = document.querySelector('#profile_info');
@@ -398,7 +391,7 @@ function draw() {
 	let x1, y1, z1;
 
 	if (reordered) {
-		for (var i = 0; i < n; i++) {
+		for (var i = 0; i <= n; i++) {
 			stroke([0,255 - i*inc,i*inc]);
 			tracksIndex = relativeOrder[i]
 			push();
@@ -418,7 +411,7 @@ function draw() {
 				
 		}
 	} else {
-		for (var i = 0; i < n; i++) {
+		for (var i = 0; i <= n; i++) {
 			// stroke([255,i*inc, 0]);
 			stroke([0,255 - i*inc,i*inc]);
 			push();
@@ -445,7 +438,17 @@ function getRandomInt(min, max) {
 	min = Math.ceil(min);
 	max = Math.floor(max);
 	return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
-  }
+}
+
+function renderPlaylists(playlists) {
+	// console.log(playlists);
+	 //Set playlists
+	 document.getElementById("playlist0").innerHTML = playlists[0]["name"];
+	 document.getElementById("playlist1").innerHTML = playlists[1]["name"];
+	 document.getElementById("playlist2").innerHTML = playlists[2]["name"];
+	 document.getElementById("playlist3").innerHTML = playlists[3]["name"];
+	 document.getElementById("playlist4").innerHTML = playlists[4]["name"];
+}
 
 // function getFormData(formId) {
 // 	const form = document.getElementById(formId);
