@@ -84,7 +84,7 @@ function reorderPlaylist() {
 		
 		*/
 		let uriList = []; 
-		relativeOrder = [];
+		let relativeOrderTMP = [];
 		let n = tracks.length-1;
 		for (let i = 0; i < tracks.length; i++) {
 			tracks[i]["used"] = false;
@@ -101,7 +101,7 @@ function reorderPlaylist() {
 		var nearestSong;
 		var nearestSongIndex = startIndex;
 
-		relativeOrder.push(startIndex); //used to map new order to tracks array without sorting
+		relativeOrderTMP.push(startIndex); //used to map new order to tracks array without sorting
 		
 		// console.log(tracks);
 
@@ -123,10 +123,10 @@ function reorderPlaylist() {
 			uriList.push(nearestSong["uri"]);
 			song = nearestSong;	
 			tracks[nearestSongIndex]["used"] = true;
-			relativeOrder.push(nearestSongIndex);
+			relativeOrderTMP.push(nearestSongIndex);
 			minDistance = 9999999999;
 		} 
-
+		relativeOrder = relativeOrderTMP;
 		// Return success
 		resolve(uriList)
 	});
