@@ -9,6 +9,7 @@ const scope = "playlist-modify-public"
 
 //Constants 
 const AUTH_BASE_URL = 'https://accounts.spotify.com/authorize';
+const USER_ENDPOINT = "me";
 const API_ENDPOINT = 'https://api.spotify.com/v1/';
 const PLAYLIST_ENDPOINT = "me/playlists?limit=5"; //set number of playlists here
 function AUDIOANALYSIS_ENDPOINT(trackIDs) {
@@ -19,12 +20,15 @@ function AUDIOANALYSIS_ENDPOINT(trackIDs) {
 			tracIDstr = tracIDstr.concat("%2C");
 		}
 	}
-	
 	return "audio-features" + "?ids=" + tracIDstr
 }
 function TRACKS_ENDPOINT(playlist_id) {
 	return "playlists/"+playlist_id+"/tracks";
 }
+function NEW_PLAYLIST_ENDPOINT(user_id) {
+	return "users/"+user_id+"/playlists";
+}
+
 
 
 
@@ -33,12 +37,21 @@ const authURI = AUTH_BASE_URL + '?client_id='+client_id+"&response_type=token&re
 
 //Variables
 let ACCESS_TOKEN;
+var userID;
+var userName;
+
 var playlists; // = JSON.parse('[{"name":"[None]"}, {"name":"[None]"}, {"name":"[None]"}]') //To be populated 
 var playlist_id;
+var playlistName; // for adding to the new playlist
+var playlistDescription; // for adding to the new playlist
+var createdPlaylistID;
+var createdPlaylistName = "";
+
 var tracks;
 var trackIDs;
 var reorderedURIs;
 var trackAnalysis;
+
 var nextPlaylistPage = "";
 var previousPlaylistPage = "";
 var trackString = "";
@@ -136,7 +149,7 @@ function reorderPlaylist() {
 	solver.then(function (uriList) {
 		reordered = true; //allow visualisation
 		// console.log(uriList);
-		replaceTracks(uriList, playlist_id) //Pass to reorder
+		replaceTracks(uriList, createdPlaylistID) //Pass to reorder
 	}, function (error) {
 		console.log(error);
 	});
@@ -153,11 +166,52 @@ function getCurrentQueryParameters(delimiter = '#') {
 	return params;
 }
 
-function replaceTracks(reorderedURIs, playlist_id) {	
+function createNewPlaylist() {	
+	//Skip create if this platlist already exists by name for a better UX
+	if (createdPlaylistName == playlistName + ".optimal") {
+		// Playlist exists, skip create step
+		reorderPlaylist(); //pass to reorder algorithm
+	} else {
+		//Create new playlist
+		const currentQueryParameters = getCurrentQueryParameters('#');
+		ACCESS_TOKEN = currentQueryParameters.get('access_token');
+
+		NEW_PLAYLIST_ENDPOINT_ID = NEW_PLAYLIST_ENDPOINT(userID);
+		createdPlaylistName = playlistName + ".optimal"
+		
+		let newPlaylistDescription = playlistDescription + " ~ Optimised by Smart Shuffle."
+		console.log(API_ENDPOINT + NEW_PLAYLIST_ENDPOINT_ID);
+		const fetchOptions = {
+			method: 'POST',
+			headers: new Headers({
+				'Authorization': `Bearer ${ACCESS_TOKEN}`,
+				'Content-Type': "application/json",
+				'Accept': "application/json"
+			}),
+			body: JSON.stringify({
+				"name": createdPlaylistName,
+				"description": newPlaylistDescription,
+				"public": true
+			})
+		};
+
+		fetch(API_ENDPOINT + NEW_PLAYLIST_ENDPOINT_ID, fetchOptions).then(function (response) {
+			return response.json();
+		}).then(function (json) {
+			createdPlaylistID = json["id"];
+			console.log(json);
+			reorderPlaylist(); //pass to reorder algorithm
+		}).catch(function (error) {
+			console.log(error);
+		});
+	}
+}
+
+function replaceTracks(reorderedURIs, createdPlaylistID) {	
 	const currentQueryParameters = getCurrentQueryParameters('#');
 	ACCESS_TOKEN = currentQueryParameters.get('access_token');
 
-	TRACKS_ENDPOINT_ID = TRACKS_ENDPOINT(playlist_id);
+	TRACKS_ENDPOINT_ID = TRACKS_ENDPOINT(createdPlaylistID);
 
 	const fetchOptions = {
 		method: 'PUT',
@@ -218,8 +272,11 @@ function fetchPlaylistTracks(button_id) {
 	const currentQueryParameters = getCurrentQueryParameters('#');
 	ACCESS_TOKEN = currentQueryParameters.get('access_token');
 
+	console.log(playlists[button_id]);
 	playlist_id = playlists[button_id]["id"];
-	// console.log(playlist_id);
+	playlistName = playlists[button_id]["name"];
+	playlistDescription = playlists[button_id]["description"];
+
 	TRACKS_ENDPOINT_ID = TRACKS_ENDPOINT(playlist_id);
 
 	const fetchOptions = {
@@ -243,9 +300,10 @@ function fetchPlaylistTracks(button_id) {
 			trackString = trackString.concat(items[i]["track"]["name"] + "//")
 			//TODO pagination of analysis call here!
 		}
-	
-	//Update stong display
+		
+	//Update song display
 	document.getElementById("trackString").innerHTML = trackString;	
+	document.getElementById("warning").innerHTML = "⚠️ This will create a new playlist named " + playlists[button_id]["name"] + ".optimal"
 	fetchTrackAnalysis(trackIDs); //Call for analysis
 
 	}).catch(function (error) {
@@ -277,6 +335,7 @@ function fetchPlaylists(nextPlaylistPageURL = "") {
 		nextPlaylistPage = json["next"];
 		previousPlaylistPage = json["previous"];
 		playlists = json["items"];
+		fetchProfileInformation(); // Get user ID
 		renderPlaylists(playlists);
 		// console.log(json);
 	}).catch(function (error) {
@@ -301,11 +360,13 @@ function fetchProfileInformation() {
 		})
 	};
 
-	fetch(API_ENDPOINT, fetchOptions).then(function (response) {
+	fetch(API_ENDPOINT + USER_ENDPOINT, fetchOptions).then(function (response) {
 		return response.json();
 	}).then(function (json) {
 		// console.log(json);
-		updateProfileInformation(json);
+		userID = json["id"];
+		userName = json["name"];
+		// updateProfileInformation(json);
 	}).catch(function (error) {
 		console.log(error);
 	});
