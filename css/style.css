@@ -47,7 +47,6 @@ pre {
 
 body {
 	line-height: 1.5;
-	/* padding: 4em 1em; */
 	padding: 1em 2em;
 	margin: 0 auto;
 	max-width: 50em;
@@ -82,5 +81,32 @@ td {
 }
 
 @media screen and (max-width:50em) {
-  td{width:100%;}
+  td{width:95%;}
+}
+
+.fullpageoverlay {
+  position: absolute;
+  width: 90%;
+  height: 100%;
+  z-index: 2;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  line-height: 1.5;
+	padding: 1em 2em 1em 2em;
+	margin: 0 auto;
+	max-width: 50em;
+}
+
+.backgroundGraphic {
+  background: #fafafa;
+  z-index: 1;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
