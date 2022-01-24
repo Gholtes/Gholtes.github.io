@@ -1,0 +1,112 @@
+@import 'https://fonts.googleapis.com/css?family=Roboto:300,400,500';
+@import 'https://fonts.googleapis.com/css?family=Open+Sans:300,400,500';
+  
+html { 
+	cursor: crosshair; 
+}
+
+body {
+	/* font-family: "Roboto"; */
+	font-family: "Open Sans", "Helvetica", "Arial", sans-serif;
+	color: #555;	
+	background: #fafafa;
+}
+
+h1,
+h2,
+h3,
+strong {
+  color: #333;
+}
+
+
+a {
+	color: #333;
+	cursor: cell;
+	text-decoration: none;
+    padding: 0 3px;
+    border-radius: 3px;
+    background: #00ff0065;
+  }
+
+a:hover {
+	background: #00ff00c0;
+}
+
+
+code,
+pre {
+  background: #f5f7f9;
+  border-bottom: 1px solid #d8dee9;
+  color: #a7adba;
+}
+
+pre {
+  border-left: 2px solid #69c;
+}
+
+body {
+	line-height: 1.5;
+	padding: 1em 2em;
+	margin: 0 auto;
+	max-width: 50em;
+}
+
+h2 {
+	margin-top: 1em;
+	padding-top: 1em;
+}
+
+code {
+  padding: 2px 4px;
+  vertical-align: text-bottom;
+}
+
+pre {
+  padding: 1em;
+}
+
+table{
+	width:100%;
+}
+tr { 
+  display: flex;
+  flex-wrap: wrap;
+  width:100%;
+}
+td {
+  width: 50%;
+  box-sizing:border-box;
+  padding-right: 2em;
+}
+
+@media screen and (max-width:50em) {
+  td{width:95%;}
+}
+
+.fullpageoverlay {
+  position: absolute;
+  width: 90%;
+  height: 100%;
+  z-index: 2;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  line-height: 1.5;
+	padding: 1em 2em 1em 2em;
+	margin: 0 auto;
+	max-width: 50em;
+}
+
+.backgroundGraphic {
+  background: #fafafa;
+  z-index: 1;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
