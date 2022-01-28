@@ -6,11 +6,19 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="stylesheet" href="css/style2022.css" />
 		<link rel="icon" href="images/favicon.ico" type="image/x-icon">
+
+		<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+		<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+		<script>	
+		$( function() {
+			$( ".draggable" ).draggable();
+		});
+		</script>  
 	</head>
 	<body>
 
 
-		<div class="uiFrame">
+		<div class="uiFrame" id="mainUI">
 
 			<div class="horizontal_container">
 				<item class="item"><button id="aboutButton" class="button">About me</button></item>
@@ -205,16 +213,51 @@
 			
 			</div>
 
+			<!-- <div class="draggable">
+				<p>Drag me around but im a class as well, in mainUI1</p>
+			</div>
+
+			<div class="draggable">
+				<p>Drag me around but im a class as well, in mainUI2</p>
+			</div> -->
+
+			
+			<!-- <div class="draggable" id=image1>
+				<p>Drag me around but im a class as well, in mainUI3</p>
+			</div> -->
+
+			<!-- Icons -->
+			<div class="horizontal_container">
+				<!-- Default icon structure -->
+				<div class="draggable" id=icon>
+						<div id=profile_pic style="cursor: pointer;">
+						</div>
+					<b>Grant.jpg</b>
+				</div>
+
+				<div class="draggable" id=icon>
+					<a href="assets/documents/CV Grant Holtes.pdf" target="_blank">
+						<div id=pdf_icon style="cursor: pointer;">
+						</div>
+					</a>
+					<b>Resume.pdf</b>
+				</div>
+
+				<!-- <div class="draggable" id=icon>
+					<a href=newurl.html target="_blank">
+						<div id=icon2 style="cursor: pointer;">
+						</div>
+					</a>
+					<b>xxxxxx</b>
+				</div>
+				 -->
+				 
+			</div>
+
 		</div>
 
-		<!-- <div class="galleryFrame">
-			<div class="image1">
-			
-			</div>
-		</div> -->
-
-		<script type="text/javascript" src="scripts/2022_index.js"></script>
 		<script type="text/javascript" src="scripts/time_based_background.js"></script>
+		<script type="text/javascript" src="scripts/2022_index.js"></script>
 	</body>
 </html>
 

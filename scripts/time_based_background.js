@@ -1,7 +1,6 @@
 // Select background based on user time
 var now = new Date();
 var hour = now.getHours();
-console.log(now, hour);
 let time_category = "day"; //default
 let backup_background = "linear-gradient(0deg, rgba(104,180,252,1) 0%,  rgba(137,201,250,1) 100%)"
 
@@ -31,10 +30,7 @@ if (hour >= 9 && hour <= 17) {
 
 index = Math.floor(Math.random() * images.length);
 background_image_path = images[index]
-console.log(hour, time_category, background_image_path);
 background_style = "url("+background_image_path+"), "+backup_background;
-// background_style = backup_background;
 background_style = "url("+background_image_path+")";
-console.log(background_style);
-console.log(document.body)
+console.log("Loading background:", background_style);
 document.body.style.backgroundImage = background_style;
