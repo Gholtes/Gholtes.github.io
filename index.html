@@ -4,110 +4,268 @@
 		<title>Grant Holtes</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<link rel="stylesheet" href="css/style2021.css" />
+		<link rel="stylesheet" href="css/style2022.css" />
 		<link rel="icon" href="images/favicon.ico" type="image/x-icon">
+
+		<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+		<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+		<script>	
+		$( function() {
+			$( ".draggable" ).draggable();
+		});
+		</script>  
 	</head>
 	<body>
-		<div>
-			<h1>Grant Holtes</h1>
-			<p>
-				Exploring the world through the lens of statistics, digital technology  
-				and economics. 
-				Currently working in Analytics and AI consulting at Deloitte in Melbourne, Australia. 
-			</p>
-		</div>
 
-		<div style="overflow-x:auto;">
-			<table>
-				<tr style="vertical-align:top">
-					<!-- what ive made section -->
-					<td>
-						<b>⚙️ Things I've made ⚙️</b>  
-						<br><br>
-						Unsupervised
-						<a href = "https://towardsdatascience.com/developing-art-style-embeddings-for-visual-similarity-comparison-of-artworks-7a9d4ade2045">
-							 image embedding</a> and 
-							<a href= "https://medium.com/@grantholtes/comparison-of-dimensionality-reduction-techniques-for-image-art-style-embeddings-723912fd6250">
-								retrieval</a> system
-						<br><br>
 
-						<a href ="/smartshuffle.html">Playlist optimisation</a> for Spotify 
-						<br><br>
+		<div class="uiFrame" id="mainUI">
 
-						Statistical analysis of service deserts in Victoria:  
-						<a href = "https://medium.com/@grantholtes/the-surprising-pattern-of-food-and-service-deserts-in-victoria-f9ae9dbdb054?sk=52b7a1934815bbc71feecb53179a3b26">report</a>, 
-						<a href = "https://github.com/Gholtes/BasicServices">code</a> 📈
-						<br><br>
-						
-						<a href="https://github.com/Gholtes/SortStream">SortStream</a>
-						 ML powered document sorting and
-						<a href="https://github.com/Gholtes/docdump">DocDump</a>
-						 text and document metadata extraction
-						<br><br>
-						
-						Mapping Melbourne's <a href = "/bikelanes.html">
-						cycling infrastructure</a> and developing an alternative <a href = "https://medium.com/@grantholtes/google-maps-sucks-for-cyclists-bb05b1bcb2c0">
-						navigation app</a> for urban cyclists 🚴
-						<br><br>
-						
-						Interacting agent simulation and statistical physics to model 
-						<a href = "https://medium.com/@grantholtes/viral-fashion-networks-statistical-physics-373bebd36b13">
-							fashion epidemics</a>
-						<br><br>
-						<a href = "/archive.html">More projects...</a>
-						
-					</td>
-					<!-- what ive done section -->
-					<td>
-						<b>✅ Things I've done ✅</b>
-						<br><br>
+			<div class="horizontal_container">
+				<item class="item"><button id="aboutButton" class="button">About me</button></item>
+				<item class="item"><button id="techButton" class="button">Technical Projects</button></item>
+				<item class="item"><button id="artButton" class="button">Creative Projects</button></item>
+			</div>
 
-						<b>Deloitte Consulting</b>: Computer vision for video analysis, 
-	 					program management for telecommunications, financial analysis, strategy
-						<br><br>
-						
-						<b>Graduate Diploma - Computer Science</b>, University of Melbourne
-						<br><br>
+			<!-- Footers -->
+			<div id="footer">
+				<div class="horizontal_container">
+					<item class="item_small"><a href = "mailto:gwholtes@gmail.com" class="buttonlink">gwholtes@gmail.com</a></item>
+					<item class="item_small"><a href = "https://www.linkedin.com/in/grantholtes/" class="buttonlink">LinkedIn</a></item>
+				</div>
+			</div>
 
-						<b>Bachelor of Commerce</b>, University of Melbourne: Faculty Medal 2018. 
-						Finance, Economics, Econometrics, Structural Engineering
-						<br>
-						
-						<p>Some smaller things:</p>
-						<ul>
-							<li>
-								R&D ML engineer @ <a href = "https://creativehub.io">creativehub.io</a>
-							</li>
+			<!-- About div -->
+			<div id="aboutModal" class="modal">
 
-							<li>
-								Data Scientist @ <a href = "https://www.lookandlearn.com">Look and Learn</a>, 
-							quantifying art style 🎨
-							</li>
+				<!-- Modal content -->
+				<div class="modal-content">
+				<span class="close", id="aboutClose">&times;</span>
+				<h2>Grant Holtes</h2>
+					<p>
+						Exploring the world through the lens of statistics, digital technology  
+						and economics. 
+						Currently working in Analytics and AI consulting at Deloitte in Melbourne, Australia and studying computer science at the University of Melbourne. 
+						Interested in generative art as a means of creative expression.
+					</p>
+					<p> Things I've done: </p>
+					<ul>
+						<li>
+							<b>Deloitte Consulting</b>: Computer vision for video analysis, 
+							program management for telecommunications, financial analysis, strategy
+						</li>
+						<li>
+							<b>Graduate Diploma - Computer Science</b>, University of Melbourne
+						</li>
+						<li>
+							<b>Bachelor of Commerce</b>, University of Melbourne: Faculty Medal 2018. 
+							Finance, Economics, Econometrics, Structural Engineering
+						</li>
+					<br>
+					</ul>
+					
+					<p>Some smaller things I've done:</p>
+					<ul>
+						<li>
+							R&D ML engineer @ <a href = "https://creativehub.io">creativehub.io</a>
+						</li>
 
-							<li>
-								Academic Tutor @ Queen’s College
-							</li>
+						<li>
+							Data Scientist @ <a href = "https://www.lookandlearn.com">Look and Learn</a>, 
+						quantifying art style
+						</li>
 
-							<li>
-								Intern @ <a href = "https://www.viburnumfunds.com.au">Viburnum Funds</a> in PE and strategic equities research
-							</li>
-						</ul>
-						
-					</td>
-				</tr>
-			</table>
-		  </div>
+						<li>
+							Academic Tutor @ Queen’s College
+						</li>
 
-		  <div>
+						<li>
+							Intern @ <a href = "https://www.viburnumfunds.com.au">Viburnum Funds</a> in PE and strategic equities research
+						</li>
+					</ul>
+				</div>
+			</div>
+
+			<!-- Technical Project div -->
+			<div id="techModal" class="modal">
+
+				<!-- Modal content -->
+				<div class="modal-content">
+				<span class="close" id="techClose">&times;</span>
+				
+					<h2>Technical Projects</h2>
+
+					<p>Projects mainly in data science, econometrics and software engineering.</p>
+
+					[2021] <a href ="/smartshuffle">Playlist optimisation</a> for Spotify 
+					<br><br>
+
+					[2021] Mapping Melbourne's <a href = "/bikelanes">cycling infrastructure</a> with OpenLayers
+					<br><br>
+					
+					[2021] Extracting <a href ="https://medium.com/analytics-vidhya/extracting-colour-palettes-with-unsupervised-learning-4399d5ca820c">Colour Palettes</a> 
+					with Unsupervised Learning
+					<br><br>
+
+					[2021] Agent based modelling 
+					<a href ="https://towardsdatascience.com/a-single-technique-to-model-forest-fires-pandemics-and-economies-3d68d7c1a865?sk=6df6afcddf43f91e896124a84cba1451">exploration</a>
+					<br><br>
+
+					[2020] Statistical analysis of service deserts in Victoria:  
+					<a href = "https://medium.com/@grantholtes/the-surprising-pattern-of-food-and-service-deserts-in-victoria-f9ae9dbdb054?sk=52b7a1934815bbc71feecb53179a3b26">report</a>, 
+					<a href = "https://github.com/Gholtes/BasicServices">code</a>
+					<br><br>
+
+					[2020] <a href="https://github.com/Gholtes/SortStream">SortStream</a>
+					ML powered document sorting
+					<br><br>
+					
+					[2020] <a href="https://github.com/Gholtes/docdump">DocDump</a>
+					text and document metadata extraction
+					<br><br>
+
+					[2020] Automated data exploration in R: <a href = "https://github.com/Gholtes/dataExploration">code</a>: 
+								<a href = "Titanic.html">Titanic example</a> 
+								<a href = "Swiss.html">Economic example</a> 
+					<br><br>
+
+					[2019] Unsupervised ML <a href ="https://towardsdatascience.com/developing-art-style-embeddings-for-visual-similarity-comparison-of-artworks-7a9d4ade2045">image embedding</a> to measure art style and visual similarity 
+					<br><br>
+
+					[2019] <a href ="https://medium.com/@grantholtes/comparison-of-dimensionality-reduction-techniques-for-image-art-style-embeddings-723912fd6250">
+						Dimensionality reduction</a> for art style embeddings
+					<br><br>
+
+					[2019] Navigation App for Urban Cyclists: 
+					<a href ="https://medium.com/@grantholtes/google-maps-sucks-for-cyclists-bb05b1bcb2c0">Write up</a> 
+					<a href ="https://github.com/Gholtes/cyclingNavigationApp">Code</a> 
+					<a href = "https://thesubmarine.it/2019/01/15/google-maps-fa-schifo-se-vuoi-andare-in-bici/">"The Submarine" feature</a>
+					<br><br>
+
+					[2019] Exploration of ML 
+					<a href ="https://medium.com/p/surprising-findings-in-document-classification-7a79e30f1666?source=email-11f42e1349cb--writer.postDistributed&sk=5b67ca3ca47541d8af1a01728e79864d">Document Classification Techniques</a> - 
+					<a href = "https://github.com/Gholtes/NLP_Doc_Classification">Code</a>
+					<br><br>
+
+					[2019] Interacting agent simulation and statistical physics to model 
+					<a href = "https://medium.com/@grantholtes/viral-fashion-networks-statistical-physics-373bebd36b13">
+						fashion epidemics</a>
+					<br><br>
+
+					[2019] Deep Dream implementation in <a href = "https://github.com/Gholtes/Keras-Deep-Dream">Keras</a>
+					<br><br>
+					
+					[2018] A <a href="https://github.com/Gholtes/BlackDanielSandersReplication">replication and extension</a> 
+					of the paper "The Impact of Economic Conditions on Participation in Disability Programs: Evidence from the Coal Boom and Bust"
+					<br><br>
+
+					[2018] Economic and financial market evaluation with 
+					<a href = "https://medium.com/@grantholtes/market-evaluation-with-similarity-methods-e50eacca34b9">similarity methods</a>
+					<br><br>
+
+					[2018] How <a href = "https://towardsdatascience.com/how-animal-investors-beat-the-market-3c052dd1e31cAnimal">Animal Investors</a> Beat the Market
+					<br><br>
+
+					[2018] <a href = "urlsketchifier.html">URL Sketchifier</a>: Give your urls a look that Gmail will flag as suspicious
+					<br><br>
+					
+					[2018] Logistic Regression — Understanding Explainable AI: 
+					<a href="https://medium.com/@grantholtes/binary-logistic-regression-understanding-explainable-ai-c79208bb3ca9">write up</a> 
+					<a href="https://github.com/Gholtes/Logistic-Regression">code</a>
+					<br><br>
+
+					[2018] Decision Trees — Understanding Explainable AI: 
+					<a href="https://medium.com/@grantholtes/decision-trees-understanding-explainable-ai-620fc37e598d">write up</a> 
+					<a href="https://github.com/Gholtes/Decision-Trees">code</a>
+					<br><br> 
+
+					[2018] Building Google's art and culture 
+					<a href="https://medium.com/hackernoon/building-googles-art-and-culture-portrait-matcher-8abc040e9a10">portrait matcher</a>
+					<br><br>
+
+					[2018] <a href="https://grantholtes.medium.com/as-the-crows-fly-video-to-photo-with-matlab-906d3c3c7b37">Analysing bird flight</a> 
+					by merging videos in MATLAB
+					<br><br>
+
+					[2017] Developing a <a href="https://medium.com/hackernoon/building-a-compass-web-app-c79fec31e080">compass web app</a> 
+					with mobile sensor integration
+					<br><br>
+
+					[2017] Developing <a href="https://towardsdatascience.com/autoencoder-zoo-669d6490895f">autoencoders</a> 
+					for image correction
+					<br><br>
+
+					[2017] <a href="AI.html">Mini-max algorithm</a> 
+					for Connect 4
+					<br><br>
+
+				</div>
 			
-			<b>
-				Get in touch:
-			</b>
-			Feel free to email me on 
-				<a href = "mailto:gwholtes@gmail.com">gwholtes@gmail.com</a> or message through 
-				<a href = "https://www.linkedin.com/in/grantholtes/">LinkedIn</a>.
+			</div>
+
+			<!-- Creative Project div -->
+			<div id="artModal" class="modal">
+
+				<!-- Modal content -->
+				<div class="modal-content">
+				<span class="close" id="artClose">&times;</span>
+				
+					<h2>Creative Projects</h2>
+
+					<p>Projects in generative art, image manipulation.</p>
+
+					[2022] <a href ="/creativeprojects/sunset_gradients.html">Creating sunset gradients in P5.js</a>
+					<br><br>
+					[2022] <a href ="/creativeprojects/line_blur.html">Creating abstract images from lines</a>
+					<br><br>
+				</div>
+			
+			</div>
+
+			<!-- <div class="draggable">
+				<p>Drag me around but im a class as well, in mainUI1</p>
+			</div>
+
+			<div class="draggable">
+				<p>Drag me around but im a class as well, in mainUI2</p>
+			</div> -->
+
+			
+			<!-- <div class="draggable" id=image1>
+				<p>Drag me around but im a class as well, in mainUI3</p>
+			</div> -->
+
+			<!-- Icons -->
+			<div class="horizontal_container">
+				<!-- Default icon structure -->
+				<div class="draggable" id=icon>
+						<div id=profile_pic style="cursor: pointer;">
+						</div>
+					<b class = "draggable_names">Grant.jpg</b>
+				</div>
+
+				<div class="draggable" id=icon>
+					<a href="assets/documents/CV Grant Holtes.pdf" target="_blank">
+						<div id=pdf_icon style="cursor: pointer;">
+						</div>
+					</a>
+					<b class = "draggable_names"> Resume.pdf</b>
+				</div>
+
+				<!-- <div class="draggable" id=icon>
+					<a href=newurl.html target="_blank">
+						<div id=icon2 style="cursor: pointer;">
+						</div>
+					</a>
+					<b>xxxxxx</b>
+				</div>
+				 -->
+				 
+			</div>
+
 		</div>
-		
+
+		<script type="text/javascript" src="scripts/time_based_background.js"></script>
+		<script type="text/javascript" src="scripts/2022_index.js"></script>
 	</body>
 </html>
-	
+

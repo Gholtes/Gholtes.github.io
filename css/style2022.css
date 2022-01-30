@@ -1,4 +1,4 @@
-  html { 
+html { 
 	cursor: crosshair; 
 }
 
@@ -160,13 +160,20 @@ a.buttonlink:hover {
 
 /* Floating assets */
 
-
 .draggable { 
   width: 20%; 
   height: 20%; 
   padding: 0.5em; 
   cursor: move; /* fallback if grab cursor is unsupported */
   cursor: grab;
+}
+
+.draggable_names {
+  color:rgb(255, 254, 254);
+  padding: 0 4px;
+  border-radius: 0px;
+  background: rgb(62, 110, 155);
+  background: rgba(38, 68, 95, 0.5);
 }
 
 #image1 {

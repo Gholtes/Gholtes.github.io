@@ -1,0 +1,71 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Grant Holtes</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="../css/creativeprojects.css" />
+		<link rel="icon" href="images/favicon.ico" type="image/x-icon">
+	</head>
+	<body>
+		<h1>Sunset Gradients</h1>
+		<a href = "../index.html">Home</a>
+		<br><br>
+		Creating gradients from sunsets
+		<br>
+		<b>Medium:</b> Javascript 
+
+		<br><br>
+		<img class = "fullimage" src="../assets/creativeprojects/sunset_pixels/s4_edit 2.PNG" alt="sunset gradient">
+		<br>
+		Gradient #4
+
+		<br><br>
+		<img class = "fullimage" src="../assets/creativeprojects/sunset_pixels/s1_edit 2.PNG" alt="sunset gradient">
+		<br>
+		Gradient #1
+
+		<br><br>
+		<b>How it works</b>
+		
+		<br><br>
+		<img class = "smallimage" src="../assets/creativeprojects/sunset_pixels/s8_edit_1 2.PNG" alt="sunset gradient">
+		<br>
+		1) Find a nice photo of a sunset, or even better, take one yourself.
+		
+		<br><br>
+		<img class = "smallimage" src="../assets/creativeprojects/sunset_pixels/s8_edit_2 2.PNG" alt="sunset gradient">
+		<br>
+		2) The aim here is to find the sun in the image. A good place to start is to extract a mask of only the brightest pixels, which is a bit messy but does remove a lot of the non-sun regions.
+		
+		<br><br>
+		<img class = "smallimage" src="../assets/creativeprojects/sunset_pixels/s8_edit_3 2.PNG" alt="sunset gradient">
+		<br>
+		3) The noisy bits can be removed using an 'erode' operation, which removes small regions from the mask.
+		
+		<br><br>
+		<img class = "smallimage" src="../assets/creativeprojects/sunset_pixels/s8_edit_4 2.PNG" alt="sunset gradient">
+		<br>
+		4) The sun can now be located at the center of the remaining white pixels in the mask.
+		
+		<br><br>
+		<img class = "smallimage" src="../assets/creativeprojects/sunset_pixels/s8_edit_5 2.PNG" alt="sunset gradient">
+		<br>
+		5) Finally, all the pixels in the column that the sun is in are extruded along the x axis to form the gradient.
+		
+		<br><br>
+		<img class = "smallimage" src="../assets/creativeprojects/sunset_pixels/s5_edit 2.PNG" alt="sunset gradient">
+		<br>
+		Gradient #5
+
+		<br><br>
+		<img class = "smallimage" src="../assets/creativeprojects/sunset_pixels/s6_edit 2.PNG" alt="sunset gradient">
+		<br>
+		Gradient #6
+
+		<br><br>
+		<img class = "fullimage" src="../assets/creativeprojects/sunset_pixels/s7_edit 2.PNG" alt="sunset gradient">
+		<br>
+		Gradient #7
+	</body>
+</html>

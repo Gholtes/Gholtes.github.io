@@ -1,0 +1,32 @@
+html { 
+	cursor: crosshair; 
+}
+
+body {
+	font-family: monospace;
+	width: 80%
+}
+
+.fullimage {
+	width: 100%;
+}
+
+.smallimage {
+	width: 55%;
+}
+
+.thumbimage {
+	width: 100px;
+	height: 100px;
+}
+
+a {
+	color: rgb(51, 172, 221);
+	  cursor: cell;
+	  text-decoration: underline;
+	}
+  
+  a:hover {
+	color: rgb(255, 0, 0);
+	
+  }
