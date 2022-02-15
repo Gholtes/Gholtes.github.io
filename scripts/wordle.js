@@ -66,8 +66,8 @@ function ingestUserInput() {
 	var lettersExclude = document.getElementById("LettersExclude").value;
 
 	//Apply rules to inputs
-	lettersInclude = lettersInclude.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/0123456789]/gi, '')
-	lettersExclude = lettersExclude.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/0123456789]/gi, '')
+	lettersInclude = lettersInclude.replace(/[ `~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/0123456789]/gi, '')
+	lettersExclude = lettersExclude.replace(/[ `~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/0123456789]/gi, '')
 
 	if (known1 === "") {known1 = " "};
 	if (known2 === "") {known2 = " "};
@@ -77,7 +77,7 @@ function ingestUserInput() {
 
 	//Form inputs to serch
 	var knownStr = known1 + known2 + known3 + known4 + known5;
-	knownStr = knownStr.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/0123456789]/gi, ' ');
+	knownStr = knownStr.replace(/[ `~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/0123456789]/gi, ' ');
 	
 	//Run search
 	matches = wordleSearch(knownStr, lettersInclude, lettersExclude);
