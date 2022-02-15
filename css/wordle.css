@@ -1,0 +1,46 @@
+
+body {
+		font-family: sans-serif;
+		color: rgb(43, 43, 43);	
+		background: #fafafa;
+}
+
+.main {
+	position: absolute;
+	width:45%;
+	left:27.5%;
+	text-align: center;
+}
+
+@media screen and (max-width:50em) {
+	.main	{
+		width:95%;
+		left:2.5%
+	}
+  }
+
+.singleLetter {
+	width: 10px;
+	color: seagreen;
+}
+
+.multiLetterInclude {
+	width: 100px;
+	color: orange;
+}
+
+.multiLetterExclude {
+	width: 100px;
+	color: black;
+}
+
+button {
+	background: rgb(231, 231, 231);
+	border: none;
+	color: rgb(0, 0, 0);
+	padding: 0 4px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 18px;
+}
