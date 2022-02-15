@@ -19,6 +19,7 @@
 		<div class="main">
 			<div>
 				<h1>Wordle Solver</h1>
+				<h3>Wordle dictionary and search</h3>
 				<form action="/action_page.php">
 					<label>Known letters and locations:</label> <br>
 					<input class="singleLetter" type="text" id="known1" name="known1">
@@ -32,6 +33,7 @@
 
 					<label for="lname">Letters to exclude:</label><br>
 					<input class="multiLetterExclude" type="text" id="LettersExclude" name="exclude"><br><br>
+					<i>Leave unknown items blank</i><br> <br>
 				</form>
 
 				<button onclick="ingestUserInput()" id="go" class="button">Search</button>

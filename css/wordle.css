@@ -20,17 +20,21 @@ body {
   }
 
 .singleLetter {
-	width: 10px;
+	width: 15px;
+	height: 15px;
+	text-align: center;
 	color: seagreen;
 }
 
 .multiLetterInclude {
 	width: 100px;
+	height: 15px;
 	color: orange;
 }
 
 .multiLetterExclude {
 	width: 100px;
+	height: 15px;
 	color: black;
 }
 

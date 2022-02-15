@@ -7,22 +7,24 @@ function wordleSearch(knownLetters, includedLetters, notIncludedLetters) {
 	var j;
 	var matches = []
 	var match_included;
-
+	//Format inputs
 	wildCard = '\\D';
 	regexString = '';
+	knownLetters = knownLetters.toLowerCase();
 	includedLetters = includedLetters.toLowerCase();
 	notIncludedLetters = notIncludedLetters.toLowerCase();
 
+	//Build regex
 	for (i=0; i < 5; i++){
 		if (knownLetters[i] === " ") {
 			regexString = regexString + wildCard;
 		} else {
-			regexString = regexString + knownLetters[i].toLowerCase();
+			regexString = regexString + knownLetters[i];
 		}
 	}
-
 	regex = new RegExp(regexString);
 
+	//Search
     for (i=0; i < matchingWords.length; i++) {
 		matchingWord = matchingWords[i];
 		match_included = true;
@@ -36,6 +38,7 @@ function wordleSearch(knownLetters, includedLetters, notIncludedLetters) {
 					break;
 				}
 			}
+			//Check excluded letters
 			for (j=0; j < notIncludedLetters.length; j++){
 				notIncludedLetter = notIncludedLetters[j];
 				if (matchingWord.indexOf(notIncludedLetter) > -1) {
@@ -50,8 +53,50 @@ function wordleSearch(knownLetters, includedLetters, notIncludedLetters) {
 		if (match_included) {
 			matches.push(matchingWords[i]);
 		}	
-   }
-   return matches
+   	}
+   	//Rank matches based on remaining set
+   	var i;
+	var j;
+	var letter;
+	var score;
+	var scores = [];
+	var counts = {};
+	var seen_letters = [];
+	//Get counts of each unknown letter
+	for (i=0; i<matches.length; i++) {
+		seen_letters = [];
+		for (j=0; j<matches[i].length; j++) {
+			letter = matches[i][j];
+			if (knownLetters.indexOf(letter) === -1 && includedLetters.indexOf(letter) === -1 && notIncludedLetters.indexOf(letter) === -1 && !(seen_letters.includes(letter))) {
+				if (letter in counts) {
+					counts[letter] = counts[letter] + 1;
+				} else {
+					counts[letter] = 1;
+				}
+				seen_letters.push(letter); // Avoid double counting
+			}
+		}
+	}
+	//Score each match
+	for (i=0; i<matches.length; i++) {
+		seen_letters = [];
+		score = 0;
+		for (j=0; j<matches[i].length; j++) {
+			letter = matches[i][j];
+			if ((letter in counts) && !(seen_letters.includes(letter))) {
+				score = score + counts[letter];
+				seen_letters.push(letter); // Avoid double counting
+			}
+		}
+		scores.push(score)
+		// matches[i] = matches[i] + ": " + String(score)
+	}
+	//sort matches based on score
+	matches.sort(function(a, b){  
+		return - scores[matches.indexOf(a)] + scores[matches.indexOf(b)];
+	});
+
+   	return matches;
 }
 
 function ingestUserInput() {
@@ -87,7 +132,7 @@ function ingestUserInput() {
 	displayText = "Results: " + String(matches.length) + " / " + String(matchingWords.length) + " (" + String(Math.round(10000 * matches.length / matchingWords.length)/100) + "%) <br><br>";
 	var i;
 	for (i=0; i<matches.length; i++) {
-		displayText = displayText + matches[i] + "<br>"
+		displayText = displayText + matches[i].toUpperCase() + "<br>"
 	}
 	var results = document.getElementById("results");
 	results.innerHTML = displayText;
