@@ -1,0 +1,63 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>Grant Holtes</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="../css/creativeprojects.css" />
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+
+
+</head>
+
+<body>
+    <h1>Attractors</h1>
+    <a href="../index.html">Home</a>
+    <br><br> The work is a live rendering Peter de Jong Attractor with a constant exploration of the parameter space.
+    <br>
+    <b>Medium:</b> Javascript
+
+    <br><br>
+    <img class="fullimage" src="../assets/creativeprojects/attractors/attractor3B.png" alt="Attractor 3">
+    <br> Attractor 3
+
+    <br><br>
+    <img class="fullimage" src="../assets/creativeprojects/attractors/attractor2.png" alt="Attractor 2">
+    <br> Attractor 2
+
+    <br><br>
+    <canvas id="canvas" width="800" height="800"></canvas>
+    <br> Live rendering attractor
+    <br> Rendering running at <b id="fps">0</b> fps.
+
+    <br><br>
+    <img class="fullimage" src="../assets/creativeprojects/attractors/attractor4.png" alt="Attractor 4">
+    <br> Attractor 4
+
+    <br><br>
+    <img class="fullimage" src="../assets/creativeprojects/attractors/attractor.png" alt="Attractor 1">
+    <br> Attractor 1
+
+    <br><br>
+    <img class="fullimage" src="../assets/creativeprojects/attractors/attarctor3G.png" alt="Attractor 3, green">
+    <br> Attractor 3, Green
+
+    <br><br>
+    <h1>Render your own</h1>
+    <b>Input parameters:</b>
+    <input type="text" placeholder="1.4" value="1.4" id="inputA">
+    <input type="text" placeholder="-2.3" value="2.3" id="inputB">
+    <input type="text" placeholder="2.4" value="2.4" id="inputC">
+    <input type="text" placeholder="-2.9" value="-2.9" id="inputD">
+    <br> <b>Colour [RGB]:</b>
+    <input type="text" placeholder="255" value="255" id="R">
+    <input type="text" placeholder="255" value="255" id="G">
+    <input type="text" placeholder="255" value="255" id="B">
+    <button id="draw" onclick="drawButtonPressed()">Draw</button> <br>
+    <canvas id="canvasLarge" width="2000" height="2000" style="border: 1px solid"></canvas>
+
+    <script type="text/javascript" src="./scripts/canvasFunctions.js"></script>
+</body>
+
+</html>
