@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>Grant Holtes</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="../css/creativeprojects.css" />
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+
+
+</head>
+
+<body>
+    <h1>Attractors pt2</h1>
+    <a href="../index.html">Home</a>
+    <br><br> The work is a rendering of a Peter de Jong Attractor with user parameters
+    <br> <i>Rendering may take a few seconds</i>
+    <br>
+    <b>Medium:</b> Javascript
+
+
+    <br><br>
+    <b>Input parameters:</b>
+    <input type="range" min="-3" max="3" step="0.01" value="1.4" id="inputA">
+    <input type="range" min="-3" max="3" step="0.01" value="2.3" id="inputB">
+    <input type="range" min="-3" max="3" step="0.01" value="2.4" id="inputC">
+    <input type="range" min="-3" max="3" step="0.01" value="-2.9" id="inputD">
+    <button id="draw" onclick="drawButtonPressed()">Render</button> <br>
+    <br>
+    <b>Render parameters:</b>
+    <input type="range" min="0" max="0.5" step="0.01" value="0.4" id="power">
+
+    <br><br>
+    <canvas id="previewCanvas" width="350" height="350"></canvas>
+
+    <br> Rendering running at <b id="fps">0</b> fps.
+
+    <canvas id="canvasLarge" width="1920" height="1920"></canvas>
+
+    <script type="text/javascript" src="./scripts/canvasFunctionsV2.js"></script>
+</body>
+
+</html>
