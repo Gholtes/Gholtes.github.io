@@ -1,227 +1,243 @@
-html { 
-	cursor: crosshair; 
+html {
+    cursor: crosshair;
 }
 
 body {
-	/* font-family: "Roboto"; */
-	font-family: monospace;
-  /* background-image: linear-gradient(90deg, rgba(104,180,252,1) 0%,  rgba(137,201,250,1) 100%); */
-  background-image: url(../assets/sky_images/day/day2.jpg), linear-gradient(90deg, rgba(104,180,252,1) 0%,  rgba(137,201,250,1) 100%);
-  background-repeat: no-repeat;
-  background-attachment: fixed; 
-  background-size: cover;
-  z-index: 0;
-  overflow: hidden;
+    /* font-family: "Roboto"; */
+    font-family: monospace;
+    /* background-image: linear-gradient(90deg, rgba(104,180,252,1) 0%,  rgba(137,201,250,1) 100%); */
+    background-image: url(../assets/sky_images/day/day2.jpg), linear-gradient(90deg, rgba(104, 180, 252, 1) 0%, rgba(137, 201, 250, 1) 100%);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    z-index: 0;
+    overflow: hidden;
 }
 
 .uiFrame {
-  position:absolute;
-  top:0;
-  z-index: 90;
-  width: 97.5%;
-  height: 97.5%;
+    position: absolute;
+    top: 0;
+    z-index: 90;
+    width: 97.5%;
+    height: 97.5%;
 }
 
 .galleryFrame {
-  position:absolute;
-  top: 25%;
-  left: 2.5%;
-  z-index: 2;
-  background-color: #0f0;
-  width: 95%;
-  height: 95%;
+    position: absolute;
+    top: 25%;
+    left: 2.5%;
+    z-index: 2;
+    background-color: #0f0;
+    width: 95%;
+    height: 95%;
 }
 
 .horizontal_container {
-  display: flex; /* or inline-flex */
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  align-items: flex-start;
-  padding: 15px;
-  z-index: 90;
+    display: flex;
+    /* or inline-flex */
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 15px;
+    z-index: 90;
 }
 
 .item {
-  padding: 10px;
-  font-size: 25px;
-  z-index: 90;
+    padding: 10px;
+    font-size: 25px;
+    z-index: 90;
 }
 
 .item_small {
-  padding: 10px;
-  font-size: 15px;
-  z-index: 90;
+    padding: 10px;
+    font-size: 15px;
+    z-index: 90;
 }
 
 #footer {
-  position:absolute;
-  bottom:0;
-  width:100%;
-  height:10%;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 10%;
 }
 
 a {
-  color: rgb(51, 172, 221);
-	cursor: cell;
-	text-decoration: underline;
-  }
+    color: rgb(51, 172, 221);
+    cursor: cell;
+    text-decoration: underline;
+}
 
 a:hover {
-  color: rgb(255, 0, 0);
-  
+    color: rgb(255, 0, 0);
 }
 
 a.buttonlink {
-	color: rgb(0,0,0);
-	cursor: cell;
-  padding: 0 4px;
-  border-radius: 0px;
-  background: rgb(255, 255, 255);
-  }
+    color: rgb(0, 0, 0);
+    cursor: cell;
+    padding: 0 4px;
+    border-radius: 0px;
+    background: rgb(255, 255, 255);
+}
 
 a.buttonlink:hover {
-  color: rgb(104,180,252);
+    color: rgb(104, 180, 252);
 }
 
 .button_link {
-	color: rgb(0, 0, 0);
-	cursor: cell;
-	text-decoration: underline;
-  padding: 0 4px;
-  border-radius: 0px;
-  background: rgb(255, 255, 255);
-  }
+    color: rgb(0, 0, 0);
+    cursor: cell;
+    text-decoration: underline;
+    padding: 0 4px;
+    border-radius: 0px;
+    background: rgb(255, 255, 255);
+}
 
 .button_link:hover {
-  color: rgba(104,180,252);
+    color: rgba(104, 180, 252);
 }
 
 .button {
-  font-family: monospace;
-  background: rgb(255, 255, 255);
-  border: none;
-  color: rgb(0, 0, 0);
-  padding: 0 4px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  cursor: cell;
-  font-size: 23px;
+    font-family: monospace;
+    background: rgb(255, 255, 255);
+    border: none;
+    color: rgb(0, 0, 0);
+    padding: 0 4px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    cursor: cell;
+    font-size: 23px;
 }
 
 .button:hover {
-  color: rgba(104,180,252);
+    color: rgba(104, 180, 252);
 }
+
 
 /* The Modal (background) */
+
 .modal {
-  display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 100; /* Sit on top */
-  padding-top: 10px; /* Location of the box */
-  left: 0;
-  top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0,0,0); 
-  background-color: rgba(0,0,0,0.6); 
-  background-color: rgb(255, 255, 255); 
+    display: none;
+    /* Hidden by default */
+    position: fixed;
+    /* Stay in place */
+    z-index: 100;
+    /* Sit on top */
+    padding-top: 10px;
+    /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%;
+    /* Full width */
+    height: 100%;
+    /* Full height */
+    overflow: auto;
+    /* Enable scroll if needed */
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgb(255, 255, 255);
 }
+
 
 /* Modal Content */
+
 .modal-content {
-  font-family: monospace;
-  background-color: #ffffff;
-  color: rgb(0, 0, 0);
-  /* color: rgb(255, 255, 255); */
-  margin: auto;
-  overflow: auto; /* Enable scroll if needed */
-  padding: 10px;
-  width: 90%;
-  height: 90%;
-  font-size: 15px;
+    font-family: monospace;
+    background-color: #ffffff;
+    color: rgb(0, 0, 0);
+    /* color: rgb(255, 255, 255); */
+    margin: auto;
+    overflow: auto;
+    /* Enable scroll if needed */
+    padding: 10px;
+    width: 90%;
+    height: 90%;
+    font-size: 15px;
 }
 
+
 /* The Close Button */
+
 .close {
-  color: #000000;
-  float: right;
-  font-size: 35px;
+    color: #000000;
+    float: right;
+    font-size: 35px;
 }
 
 .close:hover,
 .close:focus {
-  color: #000;
-  text-decoration: none;
-  cursor: pointer;
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
 }
+
 
 /* Floating assets */
 
-.draggable { 
-  width: 20%; 
-  height: 20%; 
-  padding: 0.5em; 
-  cursor: move; /* fallback if grab cursor is unsupported */
-  cursor: grab;
+.draggable {
+    width: 20%;
+    height: 20%;
+    padding: 0.5em;
+    cursor: move;
+    /* fallback if grab cursor is unsupported */
+    cursor: grab;
 }
 
 .draggable_names {
-  color:rgb(255, 254, 254);
-  padding: 0 4px;
-  border-radius: 0px;
-  background: rgb(62, 110, 155);
-  background: rgba(38, 68, 95, 0.5);
+    color: rgb(255, 254, 254);
+    padding: 0 4px;
+    border-radius: 0px;
+    background: rgb(62, 110, 155);
+    background: rgba(38, 68, 95, 0.5);
 }
 
 #image1 {
-  width: 50%; 
-  height: 20%; 
-  top: 40%;
-  left: 25%;
-  position:absolute;
-  background-image: url(../assets/sky_images/day/day2.jpg);
-  background-repeat: no-repeat;
-  background-size: cover;
+    width: 50%;
+    height: 20%;
+    top: 40%;
+    left: 25%;
+    position: absolute;
+    background-image: url(../assets/sky_images/day/day2.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 #icon {
-  padding: 10px; 
-  width: 100px; 
-  height: 100px;
-  text-align: center; 
+    padding: 10px;
+    width: 100px;
+    height: 100px;
+    text-align: center;
 }
 
 #icon1 {
-  width: 100px; 
-  height: 100px; 
-  background-image: url(../assets/icons/folder.png);
-  background-repeat: no-repeat;
-  background-size: cover;
+    width: 100px;
+    height: 100px;
+    background-image: url(../assets/icons/folder.png);
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 #icon2 {
-  width: 100px; 
-  height: 100px; 
-  background-image: url(../assets/icons/image_icon.png);
-  background-repeat: no-repeat;
-  background-size: cover;
+    width: 100px;
+    height: 100px;
+    background-image: url(../assets/icons/image_icon.png);
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 #pdf_icon {
-  width: 100px; 
-  height: 100px; 
-  background-image: url(../assets/icons/pdf.png);
-  background-repeat: no-repeat;
-  background-size: cover;
+    width: 100px;
+    height: 100px;
+    background-image: url(../assets/icons/pdf.png);
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 #profile_pic {
-  width: 100px; 
-  height: 100px; 
-  background-image: url(../assets/home_images/me.png);
-  background-repeat: no-repeat;
-  background-size: cover;
+    width: 100px;
+    height: 100px;
+    background-image: url(../assets/home_images/me.png);
+    background-repeat: no-repeat;
+    background-size: cover;
 }
