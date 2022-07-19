@@ -1,0 +1,74 @@
+:root {
+    --main-color: rgb(67, 108, 255);
+    --text-over-main-color: rgb(255, 255, 255);
+}
+
+body {
+    font-family: helvetica, arial, sans-serif;
+    margin: 2em;
+    color: #3D3D3D;
+}
+
+h1 {
+    color: #000000;
+}
+
+.defaultButton {
+    background-color: var(--main-color);
+    border-color: var(--main-color);
+    color: var(--text-over-main-color);
+    border-radius: 15px;
+    height: 30px;
+    font-size: 16px;
+}
+
+.defaultButton:hover {
+    background-color: var(--text-over-main-color);
+    border-color: var(--main-color);
+    color: var(--main-color);
+    border-radius: 15px;
+    height: 30px;
+    font-size: 16px;
+}
+
+video {
+    display: block;
+}
+
+section {
+    opacity: 1;
+    transition: opacity 500ms ease-in-out;
+}
+
+.removed {
+    display: none;
+}
+
+.invisible {
+    opacity: 0.7;
+}
+
+.camView {
+    position: relative;
+    float: left;
+    width: calc(100% - 20px);
+    margin: 10px;
+    cursor: pointer;
+}
+
+.boundingboxlabel {
+    position: absolute;
+    padding: 5px;
+    background-color: var(--main-color);
+    color: var(--text-over-main-color);
+    z-index: 2;
+    font-size: 12px;
+}
+
+.boundingbox {
+    /* background: rgba(0, 255, 0, 0.25); */
+    border: 2px solid var(--main-color);
+    /* border-radius: 10px; */
+    z-index: 1;
+    position: absolute;
+}

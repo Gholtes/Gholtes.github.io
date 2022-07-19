@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>TensorFlow Object Detection Demo</title>
+    <meta charset="utf-8">
+    <!-- Import the webpage's stylesheet -->
+    <link rel="stylesheet" href="styles/style.css">
+</head>
+
+<body>
+    <h1>TensorFlow JS Object Detection Demo POC</h1>
+
+    <section id="demos" class="invisible">
+        <!-- improve canvas with:
+			https://stackoverflow.com/questions/32104975/html5-mirroring-webcam-canvas -->
+        <div id="liveView" class="camView">
+            <button class="defaultButton" id="webcamButton">Start detection</button>
+            <p id="model_loading_message">Model loading...</p>
+            <video id="webcam" autoplay muted width="640" height="480"></video>
+        </div>
+    </section>
+
+
+
+    <!-- Import TensorFlow.js library -->
+    <!-- If you get a error: DevTools failed to load SourceMap: Could not load content for https://cdn.jsdelivr.net/npm/@tensorflow/tf.min.js.map: HTTP error: status code 404
+		Go to Inspect → Settings (Symbol) gear → Uncheck Enable JavaScript source maps and Enable CSS source map.
+		 https://stackoverflow.com/questions/61205390/how-to-fix-the-devtools-failed-to-load-sourcemap-could-not-load-content-error -->
+    <!-- Load TensorFlow.js. This is required to use coco-ssd model. -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs" type="text/javascript"></script>
+    <!-- Load the coco-ssd model to use to recognize things in images -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd" type="text/javascript"></script>
+
+
+    <!-- Import the page's JavaScript to do some stuff -->
+    <script src="scripts/detection_script.js" defer></script>
+</body>
+
+</html>
