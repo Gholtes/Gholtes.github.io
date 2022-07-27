@@ -54,10 +54,8 @@ var model = undefined;
 // Note: cocoSsd is an external object loaded from our index.html
 // script tag import so ignore any warning in Glitch.
 cocoSsd.load().then(function(loadedModel) {
-    console.log("loading model...")
     model = loadedModel;
-    console.log("model loaded!")
-        // Show demo section now model is ready to use.
+    // Show demo section now model is ready to use.
     demosSection.classList.remove('invisible');
     loadingMessage = document.getElementById("model_loading_message");
     loadingMessage.style.display = "none";
@@ -73,20 +71,19 @@ function predictWebcam() {
             liveView.removeChild(children[i]);
         }
         children.splice(0);
-        // Get display resolution
-
+        // Get display resolution to mirror and scale
         let display_width = video.clientWidth;
         let display_height = video.clientHeight;
         let x_scale_factor = display_width / input_width;
         let y_scale_factor = display_height / input_height;
 
-
         // Now lets loop through predictions and draw them to the live view if
         // they have a high confidence score.
         for (let n = 0; n < predictions.length; n++) {
-            // If we are over 66% sure we are sure we classified it right, draw it!
             if (predictions[n].score > 0.6) {
-
+                // Display bbox
+                // Mirror x axis in input_width
+                predictions[n].bbox[0] = input_width - predictions[n].bbox[0] - predictions[n].bbox[2];
                 const p = document.createElement('p');
                 p.setAttribute('class', 'boundingboxlabel');
                 p.innerText = predictions[n].class + ' - with ' +
