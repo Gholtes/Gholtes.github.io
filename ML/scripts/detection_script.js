@@ -2,6 +2,8 @@ const video = document.getElementById('webcam');
 const liveView = document.getElementById('liveView');
 const demosSection = document.getElementById('demos');
 const enableWebcamButton = document.getElementById('webcamButton');
+var input_width = 0;
+var input_height = 0;
 
 // Check if webcam access is supported.
 function getUserMediaSupported() {
@@ -36,6 +38,9 @@ function enableCam(event) {
     // Activate the webcam stream.
     navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
         video.srcObject = stream;
+        media_stream = stream.getVideoTracks()[0].getSettings()
+        input_width = media_stream.width;
+        input_height = media_stream.height;
         video.addEventListener('loadeddata', predictWebcam);
     });
 }
@@ -68,31 +73,39 @@ function predictWebcam() {
             liveView.removeChild(children[i]);
         }
         children.splice(0);
+        // Get display resolution
+
+        let display_width = video.clientWidth;
+        let display_height = video.clientHeight;
+        let x_scale_factor = display_width / input_width;
+        let y_scale_factor = display_height / input_height;
+
 
         // Now lets loop through predictions and draw them to the live view if
         // they have a high confidence score.
         for (let n = 0; n < predictions.length; n++) {
             // If we are over 66% sure we are sure we classified it right, draw it!
-            if (predictions[n].score > 0.06) {
+            if (predictions[n].score > 0.6) {
+
                 const p = document.createElement('p');
                 p.setAttribute('class', 'boundingboxlabel');
                 p.innerText = predictions[n].class + ' - with ' +
                     Math.round(parseFloat(predictions[n].score) * 100) +
                     '% confidence.';
-                p.style = 'margin-left: ' + predictions[n].bbox[0] + 'px; margin-top: ' +
-                    (predictions[n].bbox[1] - 10) + 'px; width: ' +
-                    (predictions[n].bbox[2] - 10) + 'px; top: 0; left: 0;';
+                p.style = 'margin-left: ' + predictions[n].bbox[0] * x_scale_factor + 'px; margin-top: ' +
+                    (predictions[n].bbox[1] * y_scale_factor - 10) + 'px; width: ' +
+                    (predictions[n].bbox[2] * x_scale_factor - 10) + 'px; top: 0; left: 0;';
 
-                const highlighter = document.createElement('div');
-                highlighter.setAttribute('class', 'boundingbox');
-                highlighter.style = 'left: ' + predictions[n].bbox[0] + 'px; top: ' +
-                    predictions[n].bbox[1] + 'px; width: ' +
-                    predictions[n].bbox[2] + 'px; height: ' +
-                    predictions[n].bbox[3] + 'px;';
+                const boundingbox = document.createElement('div');
+                boundingbox.setAttribute('class', 'boundingbox');
+                boundingbox.style = 'left: ' + predictions[n].bbox[0] * x_scale_factor + 'px; top: ' +
+                    predictions[n].bbox[1] * y_scale_factor + 'px; width: ' +
+                    predictions[n].bbox[2] * x_scale_factor + 'px; height: ' +
+                    predictions[n].bbox[3] * y_scale_factor + 'px;';
 
-                liveView.appendChild(highlighter);
+                liveView.appendChild(boundingbox);
                 liveView.appendChild(p);
-                children.push(highlighter);
+                children.push(boundingbox);
                 children.push(p);
             }
         }
