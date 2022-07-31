@@ -42,8 +42,7 @@ body {
     background: #FFFFFF;
 }
 
-.grid-item:hover,
-.grid-item:active {
+.grid-item:hover {
     background: #00FF00;
 }
 
@@ -78,15 +77,20 @@ body {
 
 @media only screen and (max-width: 800px) {
     .grid-item.header {
+        background: #00FF00;
+    }
+}
+
+@media (hover: none) {
+    /* for touch only devices */
+    .grid-item.header {
         padding: 10px 5% 10px 5%;
     }
     .grid-item.gridleft {
         padding: 10px 5% 10px 5%;
-        background: #00FF00;
     }
     .grid-item.gridright {
         padding: 10px 5% 10px 5%;
-        background: #00FF00;
     }
 }
 
