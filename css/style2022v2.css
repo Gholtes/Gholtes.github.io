@@ -53,13 +53,11 @@ body {
 
 .grid-item.gridleft {
     grid-area: gridleft;
-    /* background: #FF0000; */
     padding: 10px 10px 10px 40%;
 }
 
 .grid-item.gridright {
     grid-area: gridright;
-    /* background: #FF0000; */
     padding: 10px 40% 10px 10px;
 }
 
@@ -77,13 +75,6 @@ body {
 
 @media only screen and (max-width: 800px) {
     .grid-item.header {
-        background: #00FF00;
-    }
-}
-
-@media (hover: none) {
-    /* for touch only devices */
-    .grid-item.header {
         padding: 10px 5% 10px 5%;
     }
     .grid-item.gridleft {
@@ -91,6 +82,13 @@ body {
     }
     .grid-item.gridright {
         padding: 10px 5% 10px 5%;
+    }
+}
+
+@media (hover: none) {
+    /* for touch only devices */
+    .grid-item.header {
+        background: #00FF00;
     }
 }
 
