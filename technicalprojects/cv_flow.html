@@ -1,0 +1,70 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>Grant Holtes</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="../css/creativeprojects.css" />
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+</head>
+
+<body>
+    <h1>Stateful flow programming for computer vision applications</h1>
+    <a href="../index.html">Home</a>
+    <p>One of the challenges I have recently faced in my work at Deloitte is how to design computer vision applications that can be easily built and extended by data scientists while efficiently using available compute resources. </p>
+
+    <p>
+        The computer vision applications in question have the below properties that make this a complex undertaking:
+        <ol>
+            <li>Applications consist of sequential analysis pipelines. For example: preprocess an image, pass it through a model, run a few steps on the model output, call web services with a result</li>
+            <li>Each step in a pipeline is stateful to handle video analysis tasks.</li>
+            <li>Each step in the process may take a substantial amount of time to complete due to IO requirements and model inference latency.</li>
+            <li>The primary development language is Python, which is single threaded.</li>
+        </ol>
+    </p>
+
+    <p>To allow for a modular approach to development, each step in the pipeline is abstracted as a “building block”. These blocks must then be called in order to complete the analysis of a single input.</p>
+
+    <p>One simple way to architect this would be to simply execute the blocks in order. This can be seen in the sample analysis pipeline below.</p>
+
+    <img class="smallimage" src="../assets/images/nodes/nodes_seq.gif" alt="process running sequentially">
+
+    <p>If each building block could be abstracted as a function, this is equivalent to simply calling the functions in (topological) order. </p>
+
+    CODE EXAMPLE
+
+    <p>This approach is inefficient as no work is done in parallel, complexity (3). This inefficiency is particularly problematic when dealing with lengthly GPU inference, during which CPU computation or IO tasks could be competed. </p>
+    <p>An improvement would be to process a second input through the pipeline at the same time, using the spare CPU capacity in the first input to process the second input. This would require the use of threads or processes to provide parallel processing.</p>
+
+    <img class="smallimage" src="../assets/images/nodes/nodes_seq_pair.gif" alt="pair of process running sequentially at the same time">
+
+    <p>The natural extension of this pattern is to run N inputs through N blocks, so there is no idle time for any node.</p>
+
+    <img class="smallimage" src="../assets/images/nodes/parallel.gif" alt="All blocks run at the same time in sync">
+
+    <p>This solution has an issue in coordination, as the processing of the blocks must be perfectly in sync. There is also the questions of: </p>
+    <ul>
+        <li>How data is passed between the processes while they are running</li>
+        <li>How does each process know the next is ready for its input</li>
+    </ul>
+
+    <p>These require the use of a synchronisation and messaging layer to handle these requirements. This requires a “command and control” system that has visibility over the state of all of the building blocks and control to ensure that they are in sync.</p>
+
+    <p>One method to avoid the need for a command and control is to use a queue data structure on the communication paths between blocks. This can be a local queue in the case that the blocks are all operating on the same memory or a remote store (eg Redis
+        queue) if the blocks are distributed between containers or machines.</p>
+
+    <img class="smallimage" src="../assets/images/nodes/parallel_with_queues.gif" alt="All blocks run at the same time in sync">
+
+    <p>The queues provide:</p>
+    <ul>
+        <li>Memory to store inputs and outputs from each block</li>
+        <li>A method for each block to stay in sync by sensing how full the input and output queues are</li>
+    </ul>
+    <p>This is provided without needing a command and control structure. Each block is autonomous and self managing.</p>
+
+    <br><br>
+
+</body>
+
+</html>
