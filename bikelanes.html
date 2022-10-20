@@ -7,48 +7,65 @@
 -->
 <!DOCTYPE html>
 <html>
-  <head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-SGQPSHJMT9"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+
+    gtag('config', 'G-SGQPSHJMT9');
+</script>
+
+<head>
     <meta charset="utf-8">
     <title>Melbourne Bikelanes</title>
     <link rel="stylesheet" href="css/bikelanes.css">
-  </head>
-  <body>
-      <!-- Side by side conatiners -->
-      <section class="container">
+</head>
+
+<body>
+    <!-- Side by side conatiners -->
+    <section class="container">
         <!-- left container -->
         <div class="one">
-          <div>
-            <!-- Title div -->
-            <div class="text">
-              <h1>Melbourne's Cycling Infrastructure</h1>
-              
-              Melbourne has a large network of cycling infrastructure and even larger aspirations to expand this network. In the map existing bicycle lanes are shown in <b>blue</b>, while proposed new bike lanes are shown in <b>orange</b>. 
-              <br> <br>
-              One of the key purposes of bicycle infrastructure is to make cycling an appealing and safe mode of transport. <br>Unfortunately not every ride is without incident. The past 5 years of reported accidents involving a cyclist are overlaid, with grey and black <b>dots</b> representing minor and major accidents, and red representing fatalities. 
-              <br> <br>
-              <button type="button", id="btn1">Toggle Lanes</button>
-              <button type="button", id="btn2">Toggle Accidents</button>
-              <br> <br>
-              When deciding which of the proposed bike lanes should be constructed first, two key factors may play a part in the decision: Reduction in accidents and the use of the bike lane. Accident reduction could be approached by prioritising the bike lanes with the highest number of serious accidents, however, predicting the use of the bike lane provides a larger challenge. 
-              <br> <br>
-              One approach explore here is to assume (falsely) that all of the proposed bike paths exists and can be used. The bike lane network is transformed into a graph, and all cycling commuter’s journeys are then simulated over the network as a shortest path problem. The number of times each section in the network is used is repressed as the <b>thickness</b> of the section in the map.
-              <br> <br>
-              The individual commutes are modelled as point to point based on place of work and place of residence data from the 2016 census, with start and end coordinates sampled from within the regions that each individual reported as exact locations were not available (for some very understandable privacy reasons). This only includes individuals who reported cycling as their mode of transport, so fails to include those that would switch to cycling from another mode of transport.
-              <br> <br>
-              The false assumption that all lanes are built is based on the fact that most of the proposed routes are along existing roads that are used by cyclists despite that lack of dedicated infrastructure, as seen by the number of reported accidents along these routes. This allows each proposed section’s marginal usage to be estimated by simulating the entire complete network, rather than having to simulate every possible combination of built and unbuilt bike lanes which would require considerable computation.
-            </div>          
+            <div>
+                <!-- Title div -->
+                <div class="text">
+                    <h1>Melbourne's Cycling Infrastructure</h1>
+
+                    Melbourne has a large network of cycling infrastructure and even larger aspirations to expand this network. In the map existing bicycle lanes are shown in <b>blue</b>, while proposed new bike lanes are shown in <b>orange</b>.
+                    <br> <br> One of the key purposes of bicycle infrastructure is to make cycling an appealing and safe mode of transport. <br>Unfortunately not every ride is without incident. The past 5 years of reported accidents involving a cyclist
+                    are overlaid, with grey and black <b>dots</b> representing minor and major accidents, and red representing fatalities.
+                    <br> <br>
+                    <button type="button" , id="btn1">Toggle Lanes</button>
+                    <button type="button" , id="btn2">Toggle Accidents</button>
+                    <br> <br> When deciding which of the proposed bike lanes should be constructed first, two key factors may play a part in the decision: Reduction in accidents and the use of the bike lane. Accident reduction could be approached by prioritising
+                    the bike lanes with the highest number of serious accidents, however, predicting the use of the bike lane provides a larger challenge.
+                    <br> <br> One approach explore here is to assume (falsely) that all of the proposed bike paths exists and can be used. The bike lane network is transformed into a graph, and all cycling commuter’s journeys are then simulated over the
+                    network as a shortest path problem. The number of times each section in the network is used is repressed as the <b>thickness</b> of the section in the map.
+                    <br> <br> The individual commutes are modelled as point to point based on place of work and place of residence data from the 2016 census, with start and end coordinates sampled from within the regions that each individual reported
+                    as exact locations were not available (for some very understandable privacy reasons). This only includes individuals who reported cycling as their mode of transport, so fails to include those that would switch to cycling from another
+                    mode of transport.
+                    <br> <br> The false assumption that all lanes are built is based on the fact that most of the proposed routes are along existing roads that are used by cyclists despite that lack of dedicated infrastructure, as seen by the number of
+                    reported accidents along these routes. This allows each proposed section’s marginal usage to be estimated by simulating the entire complete network, rather than having to simulate every possible combination of built and unbuilt bike
+                    lanes which would require considerable computation.
+                </div>
             </div>
         </div>
 
         <!-- right container -->
         <div class="two">
-          <!-- map div -->
-          <div id="map-container"></div>
+            <!-- map div -->
+            <div id="map-container"></div>
         </div>
-      </section>
+    </section>
 
-  <script type="text/javascript" src="scripts/bikelanes.js"></script>
+    <script type="text/javascript" src="scripts/bikelanes.js"></script>
 </body>
-  <!-- Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. 
+<!-- Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. 
     Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>. -->
+
 </html>

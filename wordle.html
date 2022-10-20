@@ -1,50 +1,64 @@
 <!DOCTYPE HTML>
 <html>
-	<head>
-		<title>Wordle Search</title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<link rel="stylesheet" href="css/wordle.css" />
-		<link rel="icon" href="images/favicon.ico" type="image/x-icon">
 
-		<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
-		<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
-		<script>	
-		$( function() {
-			$( ".draggable" ).draggable();
-		});
-		</script>  
-	</head>
-	<body>
-		<div class="main">
-			<div>
-				<h1>Wordle Solver</h1>
-				<h3>Wordle dictionary and search</h3>
-				<form action="/action_page.php">
-					<label>Known letters and locations:</label> <br>
-					<input class="singleLetter" type="text" id="known1" name="known1">
-					<input class="singleLetter" type="text" id="known2" name="known2">
-					<input class="singleLetter" type="text" id="known3" name="known3">
-					<input class="singleLetter" type="text" id="known4" name="known4">
-					<input class="singleLetter" type="text" id="known5" name="known5"><br><br>
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SGQPSHJMT9"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
 
-					<label for="lname">Known letters, unknown locations:</label><br>
-					<input class="multiLetterInclude" type="text" id="LettersInclude" name="unknownLocation"><br><br>
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
 
-					<label for="lname">Letters to exclude:</label><br>
-					<input class="multiLetterExclude" type="text" id="LettersExclude" name="exclude"><br><br>
-					<i>Leave unknown items blank</i><br> <br>
-				</form>
+        gtag('config', 'G-SGQPSHJMT9');
+    </script>
+    <title>Wordle Search</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="css/wordle.css" />
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
 
-				<button onclick="ingestUserInput()" id="go" class="button">Search</button>
-				<br><br>
-			</div>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+    <script>
+        $(function() {
+            $(".draggable").draggable();
+        });
+    </script>
+</head>
 
-			<div id="results">
+<body>
+    <div class="main">
+        <div>
+            <h1>Wordle Solver</h1>
+            <h3>Wordle dictionary and search</h3>
+            <form action="/action_page.php">
+                <label>Known letters and locations:</label> <br>
+                <input class="singleLetter" type="text" id="known1" name="known1">
+                <input class="singleLetter" type="text" id="known2" name="known2">
+                <input class="singleLetter" type="text" id="known3" name="known3">
+                <input class="singleLetter" type="text" id="known4" name="known4">
+                <input class="singleLetter" type="text" id="known5" name="known5"><br><br>
 
-			</div>
-		</div>
-		<script type="text/javascript" src="scripts/wordle.js"></script>
-	</body>
+                <label for="lname">Known letters, unknown locations:</label><br>
+                <input class="multiLetterInclude" type="text" id="LettersInclude" name="unknownLocation"><br><br>
+
+                <label for="lname">Letters to exclude:</label><br>
+                <input class="multiLetterExclude" type="text" id="LettersExclude" name="exclude"><br><br>
+                <i>Leave unknown items blank</i><br> <br>
+            </form>
+
+            <button onclick="ingestUserInput()" id="go" class="button">Search</button>
+            <br><br>
+        </div>
+
+        <div id="results">
+
+        </div>
+    </div>
+    <script type="text/javascript" src="scripts/wordle.js"></script>
+</body>
+
 </html>
-
