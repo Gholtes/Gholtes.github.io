@@ -13,24 +13,26 @@ const USER_ENDPOINT = "me";
 const API_ENDPOINT = 'https://api.spotify.com/v1/';
 const PLAYLIST_ENDPOINT = "me/playlists?limit=5"; //set number of playlists here
 function AUDIOANALYSIS_ENDPOINT(trackIDs) {
-	tracIDstr = ""; 
-	for (let i = 0; i < trackIDs.length; i++) {
-		tracIDstr = tracIDstr.concat(trackIDs[i])
-		if (i < trackIDs.length-1) {
-			tracIDstr = tracIDstr.concat("%2C");
-		}
-	}
-	return "audio-features" + "?ids=" + tracIDstr;
+    tracIDstr = "";
+    for (let i = 0; i < trackIDs.length; i++) {
+        tracIDstr = tracIDstr.concat(trackIDs[i])
+        if (i < trackIDs.length - 1) {
+            tracIDstr = tracIDstr.concat("%2C");
+        }
+    }
+    return "audio-features" + "?ids=" + tracIDstr;
 }
+
 function TRACKS_ENDPOINT(playlist_id) {
-	return "playlists/"+playlist_id+"/tracks";
+    return "playlists/" + playlist_id + "/tracks";
 }
+
 function NEW_PLAYLIST_ENDPOINT(user_id) {
-	return "users/"+user_id+"/playlists";
+    return "users/" + user_id + "/playlists";
 }
 
 //Derived Constants 
-const authURI = AUTH_BASE_URL + '?client_id='+client_id+"&response_type=token&redirect_uri="+login_redirect_route+"&scope="+scope;
+const authURI = AUTH_BASE_URL + '?client_id=' + client_id + "&response_type=token&redirect_uri=" + login_redirect_route + "&scope=" + scope;
 const MAX_AUDIO_ANALYSIS_LENGTH = 80;
 //Variables
 let ACCESS_TOKEN;
@@ -52,604 +54,609 @@ var trackAnalysis;
 var nextPlaylistPage = "";
 var previousPlaylistPage = "";
 var trackString = "";
-var visX = [], visY = [], visZ = [];
-const varX = "tempo", varY = "energy", varZ = "key";
+var visX = [],
+    visY = [],
+    visZ = [];
+const varX = "tempo",
+    varY = "energy",
+    varZ = "key";
 var reordered = false;
 var relativeOrder = []
 
 //Logo
-visX = [0,-6,-6,-1,-6,-6,0,5,5,6,5,5,1,5,5,6,5,5,0];
-visY = [1,6,4,0,-4,-6,-1,-6,-6.5,-5,-3.5,-4,0,4,3.5,5,6.5,6,1];
-visZ = [0,-6,-6,-1,-6,-6,0,5,5,6,5,5,1,5,5,6,5,5,0];
+visX = [0, -6, -6, -1, -6, -6, 0, 5, 5, 6, 5, 5, 1, 5, 5, 6, 5, 5, 0];
+visY = [1, 6, 4, 0, -4, -6, -1, -6, -6.5, -5, -3.5, -4, 0, 4, 3.5, 5, 6.5, 6, 1];
+visZ = [0, -6, -6, -1, -6, -6, 0, 5, 5, 6, 5, 5, 1, 5, 5, 6, 5, 5, 0];
 
 // SOLVER
 
 function reorderPlaylist() {
-	//Define solver promise
-	var solver = new Promise( function(resolve, reject) {
-		/*The problem is to find a order to play the songs such
-		that the difference beween each songs is minimised.
+    //Define solver promise
+    var solver = new Promise(function(resolve, reject) {
+        /*The problem is to find a order to play the songs such
+        that the difference beween each songs is minimised.
 
-		This can be reframed as a high-dimensional traveling salesperson problem,
-		with the "positions" of each song being determined by their attributes.
+        This can be reframed as a high-dimensional traveling salesperson problem,
+        with the "positions" of each song being determined by their attributes.
 
-		The key attributes used are:
-		- tempo / BPM
-		- key
+        The key attributes used are:
+        - tempo / BPM
+        - key
 
-		algrorithm: Nearest Neighbours
+        algrorithm: Nearest Neighbours
 
-		sortTracks by BPM or shuffle
-		song = tracks[0]
-		reorderedTracks.push(song)
+        sortTracks by BPM or shuffle
+        song = tracks[0]
+        reorderedTracks.push(song)
 
-		for i=1 to length tracks:
-			NearestSong = None
-			for nextSong in tracks:
-				if nextSong not yet seen:
-					calculate distance(song, nextSong)
-					if distance < currentMin:
-						NearestSong = nextSong
-			reorderedTracks.push(NearestSong)
-			song = NearestSong
-		return reorderedTracks
+        for i=1 to length tracks:
+        	NearestSong = None
+        	for nextSong in tracks:
+        		if nextSong not yet seen:
+        			calculate distance(song, nextSong)
+        			if distance < currentMin:
+        				NearestSong = nextSong
+        	reorderedTracks.push(NearestSong)
+        	song = NearestSong
+        return reorderedTracks
 		
-		*/
-		let uriList = []; 
-		let relativeOrderTMP = [];
-		let n = tracks.length-1;
-		for (let i = 0; i < tracks.length; i++) {
-			tracks[i]["used"] = false;
-		}
-		
-		let startIndex = getRandomInt(0, n);
-		song = tracks[startIndex];
-		uriList.push(song["uri"]);
-		song["used"] = true; 
+        */
+        let uriList = [];
+        let relativeOrderTMP = [];
+        let n = tracks.length - 1;
+        for (let i = 0; i < tracks.length; i++) {
+            tracks[i]["used"] = false;
+        }
 
-		var distance;
-		var minDistance = 9999999999;
+        let startIndex = getRandomInt(0, n);
+        song = tracks[startIndex];
+        uriList.push(song["uri"]);
+        song["used"] = true;
 
-		var nearestSong;
-		var nearestSongIndex = startIndex;
+        var distance;
+        var minDistance = 9999999999;
 
-		relativeOrderTMP.push(startIndex); //used to map new order to tracks array without sorting
-		
-		// console.log(tracks);
+        var nearestSong;
+        var nearestSongIndex = startIndex;
 
-		for (let i = 1; i < tracks.length; i++) {
-			for (let j = 0; j < tracks.length; j++) {
-				if (tracks[j]["used"] == false){
-					distance = Math.abs(song["analysis"]["danceability"] - tracks[j]["analysis"]["danceability"]);
-					distance = distance + Math.abs(song["analysis"]["energy"] - tracks[j]["analysis"]["energy"]);
-					distance = distance + Math.abs(song["analysis"]["loudness"] - tracks[j]["analysis"]["loudness"]) / 10; //scale to ~[0-1]
-					distance = distance + Math.abs(song["analysis"]["tempo"] - tracks[j]["analysis"]["tempo"]) / 100; //scale to ~[0-1]
-					distance = distance + Math.abs(song["analysis"]["key"] - tracks[j]["analysis"]["key"]) / 5; //scale to ~[0-1]
-					if (distance < minDistance){
-						minDistance = distance;
-						nearestSong = tracks[j];
-						nearestSongIndex = j;
-					}
-				}
-			}
-			uriList.push(nearestSong["uri"]);
-			song = nearestSong;	
-			tracks[nearestSongIndex]["used"] = true;
-			relativeOrderTMP.push(nearestSongIndex);
-			minDistance = 9999999999;
-		} 
-		relativeOrder = relativeOrderTMP;
-		// Return success
-		resolve(uriList)
-	});
+        relativeOrderTMP.push(startIndex); //used to map new order to tracks array without sorting
 
-	solver.then(function (uriList) {
-		reordered = true; //allow visualisation
-		// console.log(uriList);
-		// for (let pageIndex = 0; pageIndex < trackIDs.length; pageIndex += MAX_AUDIO_ANALYSIS_LENGTH){
-		// 	// fetchTrackAnalysis(trackIDs, startIndex = pageIndex); //Call for analysis
-		// 	replaceTracks(uriList.slice(pageIndex, pageIndex+MAX_AUDIO_ANALYSIS_LENGTH), createdPlaylistID)
-		// }
-		addTracks(uriList, createdPlaylistID) //Pass to reorder
-	}, function (error) {
-		console.log(error);
-	});
+        // console.log(tracks);
+
+        for (let i = 1; i < tracks.length; i++) {
+            for (let j = 0; j < tracks.length; j++) {
+                if (tracks[j]["used"] == false) {
+                    distance = Math.abs(song["analysis"]["danceability"] - tracks[j]["analysis"]["danceability"]);
+                    distance = distance + Math.abs(song["analysis"]["energy"] - tracks[j]["analysis"]["energy"]);
+                    distance = distance + Math.abs(song["analysis"]["loudness"] - tracks[j]["analysis"]["loudness"]) / 10; //scale to ~[0-1]
+                    distance = distance + Math.abs(song["analysis"]["tempo"] - tracks[j]["analysis"]["tempo"]) / 100; //scale to ~[0-1]
+                    distance = distance + Math.abs(song["analysis"]["key"] - tracks[j]["analysis"]["key"]) / 5; //scale to ~[0-1]
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        nearestSong = tracks[j];
+                        nearestSongIndex = j;
+                    }
+                }
+            }
+            uriList.push(nearestSong["uri"]);
+            song = nearestSong;
+            tracks[nearestSongIndex]["used"] = true;
+            relativeOrderTMP.push(nearestSongIndex);
+            minDistance = 9999999999;
+        }
+        relativeOrder = relativeOrderTMP;
+        // Return success
+        resolve(uriList)
+    });
+
+    solver.then(function(uriList) {
+        reordered = true; //allow visualisation
+        // console.log(uriList);
+        // for (let pageIndex = 0; pageIndex < trackIDs.length; pageIndex += MAX_AUDIO_ANALYSIS_LENGTH){
+        // 	// fetchTrackAnalysis(trackIDs, startIndex = pageIndex); //Call for analysis
+        // 	replaceTracks(uriList.slice(pageIndex, pageIndex+MAX_AUDIO_ANALYSIS_LENGTH), createdPlaylistID)
+        // }
+        addTracks(uriList, createdPlaylistID) //Pass to reorder
+    }, function(error) {
+        console.log(error);
+    });
 
 }
 
 // API REQUESTS
 
 function getCurrentQueryParameters(delimiter = '#') {
-	// the access_token is passed back in a URL fragment, not a query string
-	// errors, on the other hand are passed back in a query string
-	const currentLocation = String(window.location).split(delimiter)[1];
-	const params = new URLSearchParams(currentLocation);
-	return params;
+    // the access_token is passed back in a URL fragment, not a query string
+    // errors, on the other hand are passed back in a query string
+    const currentLocation = String(window.location).split(delimiter)[1];
+    const params = new URLSearchParams(currentLocation);
+    return params;
 }
 
-function createNewPlaylist() {	
-	//Skip create if this platlist already exists by name for a better UX
-	if (createdPlaylistName == playlistName + ".optimal") {
-		// Playlist exists, skip create step but delete current songs
-		ClearThenAddTracks(createdPlaylistID);
-		 // then pass to reorder algorithm, which is done in ClearThenAddTracks()
-	} else {
-		//Create new playlist, then pass to reorder algorithm
-		const currentQueryParameters = getCurrentQueryParameters('#');
-		ACCESS_TOKEN = currentQueryParameters.get('access_token');
+function createNewPlaylist() {
+    //Skip create if this platlist already exists by name for a better UX
+    if (createdPlaylistName == playlistName + ".optimal") {
+        // Playlist exists, skip create step but delete current songs
+        ClearThenAddTracks(createdPlaylistID);
+        // then pass to reorder algorithm, which is done in ClearThenAddTracks()
+    } else {
+        //Create new playlist, then pass to reorder algorithm
+        const currentQueryParameters = getCurrentQueryParameters('#');
+        ACCESS_TOKEN = currentQueryParameters.get('access_token');
 
-		NEW_PLAYLIST_ENDPOINT_ID = NEW_PLAYLIST_ENDPOINT(userID);
-		createdPlaylistName = playlistName + ".optimal"
-		
-		let newPlaylistDescription = playlistDescription + " ~ Optimised by Smart Shuffle."
-		// console.log(API_ENDPOINT + NEW_PLAYLIST_ENDPOINT_ID);
-		const fetchOptions = {
-			method: 'POST',
-			headers: new Headers({
-				'Authorization': `Bearer ${ACCESS_TOKEN}`,
-				'Content-Type': "application/json",
-				'Accept': "application/json"
-			}),
-			body: JSON.stringify({
-				"name": createdPlaylistName,
-				"description": newPlaylistDescription,
-				"public": true
-			})
-		};
+        NEW_PLAYLIST_ENDPOINT_ID = NEW_PLAYLIST_ENDPOINT(userID);
+        createdPlaylistName = playlistName + ".optimal"
 
-		fetch(API_ENDPOINT + NEW_PLAYLIST_ENDPOINT_ID, fetchOptions).then(function (response) {
-			return response.json();
-		}).then(function (json) {
-			createdPlaylistID = json["id"];
-			// console.log(json);
-			reorderPlaylist(); //pass to reorder algorithm
-		}).catch(function (error) {
-			console.log(error);
-		});
-	}
+        let newPlaylistDescription = playlistDescription + " ~ Optimised by Smart Shuffle."
+            // console.log(API_ENDPOINT + NEW_PLAYLIST_ENDPOINT_ID);
+        const fetchOptions = {
+            method: 'POST',
+            headers: new Headers({
+                'Authorization': `Bearer ${ACCESS_TOKEN}`,
+                'Content-Type': "application/json",
+                'Accept': "application/json"
+            }),
+            body: JSON.stringify({
+                "name": createdPlaylistName,
+                "description": newPlaylistDescription,
+                "public": true
+            })
+        };
+
+        fetch(API_ENDPOINT + NEW_PLAYLIST_ENDPOINT_ID, fetchOptions).then(function(response) {
+            return response.json();
+        }).then(function(json) {
+            createdPlaylistID = json["id"];
+            // console.log(json);
+            reorderPlaylist(); //pass to reorder algorithm
+        }).catch(function(error) {
+            console.log(error);
+        });
+    }
 }
 
-function addTracks(reorderedURIs, createdPlaylistID) {	
-	const currentQueryParameters = getCurrentQueryParameters('#');
-	ACCESS_TOKEN = currentQueryParameters.get('access_token');
+function addTracks(reorderedURIs, createdPlaylistID) {
+    const currentQueryParameters = getCurrentQueryParameters('#');
+    ACCESS_TOKEN = currentQueryParameters.get('access_token');
 
-	TRACKS_ENDPOINT_ID = TRACKS_ENDPOINT(createdPlaylistID);
+    TRACKS_ENDPOINT_ID = TRACKS_ENDPOINT(createdPlaylistID);
 
-	const fetchOptions = {
-		method: 'POST',
-		headers: new Headers({
-			'Authorization': `Bearer ${ACCESS_TOKEN}`,
-			'Content-Type': "application/json",
-			'Accept': "application/json"
-		}),
-		body: JSON.stringify({"uris": reorderedURIs.slice(0,MAX_AUDIO_ANALYSIS_LENGTH)})
-	};
+    const fetchOptions = {
+        method: 'POST',
+        headers: new Headers({
+            'Authorization': `Bearer ${ACCESS_TOKEN}`,
+            'Content-Type': "application/json",
+            'Accept': "application/json"
+        }),
+        body: JSON.stringify({ "uris": reorderedURIs.slice(0, MAX_AUDIO_ANALYSIS_LENGTH) })
+    };
 
-	fetch(API_ENDPOINT + TRACKS_ENDPOINT_ID, fetchOptions).then(function (response) {
-		return response.json();
-	}).then(function (json) {
-		// console.log(json);
-		if (reorderedURIs.length > MAX_AUDIO_ANALYSIS_LENGTH){ //Recusive addition of max number of songs
-			addTracks(reorderedURIs.slice(MAX_AUDIO_ANALYSIS_LENGTH, reorderedURIs.length), createdPlaylistID) 
-		}
-	}).catch(function (error) {
-		console.log(error);
-	});
+    fetch(API_ENDPOINT + TRACKS_ENDPOINT_ID, fetchOptions).then(function(response) {
+        return response.json();
+    }).then(function(json) {
+        // console.log(json);
+        if (reorderedURIs.length > MAX_AUDIO_ANALYSIS_LENGTH) { //Recusive addition of max number of songs
+            addTracks(reorderedURIs.slice(MAX_AUDIO_ANALYSIS_LENGTH, reorderedURIs.length), createdPlaylistID)
+        }
+    }).catch(function(error) {
+        console.log(error);
+    });
 }
 
-function ClearThenAddTracks(createdPlaylistID) {	
-		const currentQueryParameters = getCurrentQueryParameters('#');
-		ACCESS_TOKEN = currentQueryParameters.get('access_token');
-	
-		TRACKS_ENDPOINT_ID = TRACKS_ENDPOINT(createdPlaylistID);
-	
-		const fetchOptions = {
-			method: 'PUT',
-			headers: new Headers({
-				'Authorization': `Bearer ${ACCESS_TOKEN}`,
-				'Content-Type': "application/json",
-				'Accept': "application/json"
-			}),
-			body: JSON.stringify({"uris": []})
-		};
-	
-		fetch(API_ENDPOINT + TRACKS_ENDPOINT_ID, fetchOptions).then(function (response) {
-			return response.json();
-		}).then(function (json) {
-			reorderPlaylist(); //pass to reorder
-			// console.log(json);
-		}).catch(function (error) {
-			console.log(error);
-		});
-	}
+function ClearThenAddTracks(createdPlaylistID) {
+    const currentQueryParameters = getCurrentQueryParameters('#');
+    ACCESS_TOKEN = currentQueryParameters.get('access_token');
+
+    TRACKS_ENDPOINT_ID = TRACKS_ENDPOINT(createdPlaylistID);
+
+    const fetchOptions = {
+        method: 'PUT',
+        headers: new Headers({
+            'Authorization': `Bearer ${ACCESS_TOKEN}`,
+            'Content-Type': "application/json",
+            'Accept': "application/json"
+        }),
+        body: JSON.stringify({ "uris": [] })
+    };
+
+    fetch(API_ENDPOINT + TRACKS_ENDPOINT_ID, fetchOptions).then(function(response) {
+        return response.json();
+    }).then(function(json) {
+        reorderPlaylist(); //pass to reorder
+        // console.log(json);
+    }).catch(function(error) {
+        console.log(error);
+    });
+}
 
 function fetchTrackAnalysis(trackIDs, startIndex = 0) {
 
-	const currentQueryParameters = getCurrentQueryParameters('#');
-	ACCESS_TOKEN = currentQueryParameters.get('access_token');
+    const currentQueryParameters = getCurrentQueryParameters('#');
+    ACCESS_TOKEN = currentQueryParameters.get('access_token');
 
-	ANALYSIS_ENDPOINT_ID = AUDIOANALYSIS_ENDPOINT(trackIDs.slice(startIndex, startIndex+MAX_AUDIO_ANALYSIS_LENGTH));
+    ANALYSIS_ENDPOINT_ID = AUDIOANALYSIS_ENDPOINT(trackIDs.slice(startIndex, startIndex + MAX_AUDIO_ANALYSIS_LENGTH));
 
-	const fetchOptions = {
-		method: 'GET',
-		headers: new Headers({
-			'Authorization': `Bearer ${ACCESS_TOKEN}`
-		})
-	};
+    const fetchOptions = {
+        method: 'GET',
+        headers: new Headers({
+            'Authorization': `Bearer ${ACCESS_TOKEN}`
+        })
+    };
 
-	fetch(API_ENDPOINT + ANALYSIS_ENDPOINT_ID, fetchOptions).then(function (response) {
-		return response.json();
-	}).then(function (json) {
-		//Add analysis to track data, visualisation vectors
-		// console.log(json);
-		for (let i = 0; i < json["audio_features"].length; i++) {
-			tracks[i+startIndex]["analysis"] = json["audio_features"][i]; //Map any pages, 
-			visX[i+startIndex] = json["audio_features"][i][varX]; //Accounts for async API returns
-			visY[i+startIndex] = json["audio_features"][i][varY];
-			visZ[i+startIndex] = json["audio_features"][i][varZ];
-		} 
-	}).catch(function (error) {
-		console.log(error);
-	});
+    fetch(API_ENDPOINT + ANALYSIS_ENDPOINT_ID, fetchOptions).then(function(response) {
+        return response.json();
+    }).then(function(json) {
+        //Add analysis to track data, visualisation vectors
+        // console.log(json);
+        for (let i = 0; i < json["audio_features"].length; i++) {
+            tracks[i + startIndex]["analysis"] = json["audio_features"][i]; //Map any pages, 
+            visX[i + startIndex] = json["audio_features"][i][varX]; //Accounts for async API returns
+            visY[i + startIndex] = json["audio_features"][i][varY];
+            visZ[i + startIndex] = json["audio_features"][i][varZ];
+        }
+    }).catch(function(error) {
+        console.log(error);
+    });
 }
 
 function fetchPlaylistTracks(button_id, nextURL = "") {
-	visX = [], visY = [], visZ = []; //reset
-	reordered = false;
+    visX = [], visY = [], visZ = []; //reset
+    reordered = false;
 
-	const currentQueryParameters = getCurrentQueryParameters('#');
-	ACCESS_TOKEN = currentQueryParameters.get('access_token');
+    const currentQueryParameters = getCurrentQueryParameters('#');
+    ACCESS_TOKEN = currentQueryParameters.get('access_token');
 
-	// console.log(playlists[button_id]);
-	playlist_id = playlists[button_id]["id"];
-	playlistName = playlists[button_id]["name"];
-	playlistDescription = playlists[button_id]["description"];
+    // console.log(playlists[button_id]);
+    playlist_id = playlists[button_id]["id"];
+    playlistName = playlists[button_id]["name"];
+    playlistDescription = playlists[button_id]["description"];
 
-	TRACKS_ENDPOINT_ID = TRACKS_ENDPOINT(playlist_id);
-	let ENDPOINT
-	if (nextURL != "") {
-		ENDPOINT = nextURL;
-	} else { //NEW PLAYLIST, reset vars
-		ENDPOINT = API_ENDPOINT + TRACKS_ENDPOINT_ID;
-		trackString = "";
-		tracks = [];
-		trackIDs = [];
-	}
+    TRACKS_ENDPOINT_ID = TRACKS_ENDPOINT(playlist_id);
+    let ENDPOINT
+    if (nextURL != "") {
+        ENDPOINT = nextURL;
+    } else { //NEW PLAYLIST, reset vars
+        ENDPOINT = API_ENDPOINT + TRACKS_ENDPOINT_ID;
+        trackString = "";
+        tracks = [];
+        trackIDs = [];
+    }
 
-	const fetchOptions = {
-		method: 'GET',
-		headers: new Headers({
-			'Authorization': `Bearer ${ACCESS_TOKEN}`
-		})
-	};
+    const fetchOptions = {
+        method: 'GET',
+        headers: new Headers({
+            'Authorization': `Bearer ${ACCESS_TOKEN}`
+        })
+    };
 
-	fetch(ENDPOINT, fetchOptions).then(function (response) {
-		return response.json();
-	}).then(function (json) {
-		items = json["items"];
-		
-		//Parse JSON
-		for (let i = 0; i < items.length; i++) {
-			tracks.push(items[i]["track"])
-			trackIDs.push(items[i]["track"]["id"])
-			visX.push(0.0); // account for async return order by prepopulating
-			visY.push(0.0);
-			visZ.push(0.0);
-		}
+    fetch(ENDPOINT, fetchOptions).then(function(response) {
+        return response.json();
+    }).then(function(json) {
+        items = json["items"];
 
-		
-		
-		//Update song display
-		document.getElementById("trackdiv").innerHTML = ""; // Clear existing text if it exists
-		renderTracks(items); // Render track string
-		
-		// Show display items	
-		show("optimiseButtonElement");
-		document.getElementById("warning").innerHTML = "⚠️ This will create a new playlist named " + playlists[button_id]["name"] + ".optimal"
-		// for (let pageIndex = 0; pageIndex < trackIDs.length; pageIndex += MAX_AUDIO_ANALYSIS_LENGTH){
-		// 	console.log(trackIDs.slice(pageIndex,pageIndex+MAX_AUDIO_ANALYSIS_LENGTH));
-		// 	fetchTrackAnalysis(trackIDs, startIndex = pageIndex); //Call for analysis
-		// }
-		// fetchTrackAnalysis(trackIDs);
-		if (json["next"] != null) { //Load into next page recusivly 
-			fetchPlaylistTracks(button_id, nextURL = json["next"]);
-		} else {
-			// No more pages to load!
-			//LOAD SONG DATA
-			// console.log(trackIDs);
-			for (let pageIndex = 0; pageIndex < trackIDs.length; pageIndex += MAX_AUDIO_ANALYSIS_LENGTH){
-				fetchTrackAnalysis(trackIDs, startIndex = pageIndex); //Call for analysis
-			}
-		}
-	}).catch(function (error) {
-		console.log(error);
-	});
+        //Parse JSON
+        for (let i = 0; i < items.length; i++) {
+            tracks.push(items[i]["track"])
+            trackIDs.push(items[i]["track"]["id"])
+            visX.push(0.0); // account for async return order by prepopulating
+            visY.push(0.0);
+            visZ.push(0.0);
+        }
+
+
+
+        //Update song display
+        document.getElementById("trackdiv").innerHTML = ""; // Clear existing text if it exists
+        renderTracks(items); // Render track string
+
+        // Show display items	
+        show("optimiseButtonElement");
+        document.getElementById("warning").innerHTML = "⚠️ This will create a new playlist named " + playlists[button_id]["name"] + ".optimal"
+            // for (let pageIndex = 0; pageIndex < trackIDs.length; pageIndex += MAX_AUDIO_ANALYSIS_LENGTH){
+            // 	console.log(trackIDs.slice(pageIndex,pageIndex+MAX_AUDIO_ANALYSIS_LENGTH));
+            // 	fetchTrackAnalysis(trackIDs, startIndex = pageIndex); //Call for analysis
+            // }
+            // fetchTrackAnalysis(trackIDs);
+        if (json["next"] != null) { //Load into next page recusivly 
+            fetchPlaylistTracks(button_id, nextURL = json["next"]);
+        } else {
+            // No more pages to load!
+            //LOAD SONG DATA
+            // console.log(trackIDs);
+            for (let pageIndex = 0; pageIndex < trackIDs.length; pageIndex += MAX_AUDIO_ANALYSIS_LENGTH) {
+                fetchTrackAnalysis(trackIDs, startIndex = pageIndex); //Call for analysis
+            }
+        }
+    }).catch(function(error) {
+        console.log(error);
+    });
 }
 
 function fetchPlaylists(nextPlaylistPageURL = "") {
-	const currentQueryParameters = getCurrentQueryParameters('#');
-	ACCESS_TOKEN = currentQueryParameters.get('access_token');
+    const currentQueryParameters = getCurrentQueryParameters('#');
+    ACCESS_TOKEN = currentQueryParameters.get('access_token');
 
-	const fetchOptions = {
-		method: 'GET',
-		headers: new Headers({
-			'Authorization': `Bearer ${ACCESS_TOKEN}`
-		})
-	};
+    const fetchOptions = {
+        method: 'GET',
+        headers: new Headers({
+            'Authorization': `Bearer ${ACCESS_TOKEN}`
+        })
+    };
 
-	if (nextPlaylistPageURL == "") {
-		REQUESTURL = API_ENDPOINT + PLAYLIST_ENDPOINT;
-	} else {
-		REQUESTURL = nextPlaylistPageURL;
-	}
-	
+    if (nextPlaylistPageURL == "") {
+        REQUESTURL = API_ENDPOINT + PLAYLIST_ENDPOINT;
+    } else {
+        REQUESTURL = nextPlaylistPageURL;
+    }
 
-	fetch(REQUESTURL, fetchOptions).then(function (response) {
-		return response.json();
-	}).then(function (json) {
-		nextPlaylistPage = json["next"];
-		previousPlaylistPage = json["previous"];
-		playlists = json["items"];
-		fetchProfileInformation(); // Get user ID
-		renderPlaylists(playlists);
-		show("playlistTable");
-		show("playlistControlTable");
-		// console.log(json);
-	}).catch(function (error) {
-		console.log(error);
-	}); 
+
+    fetch(REQUESTURL, fetchOptions).then(function(response) {
+        return response.json();
+    }).then(function(json) {
+        nextPlaylistPage = json["next"];
+        previousPlaylistPage = json["previous"];
+        playlists = json["items"];
+        fetchProfileInformation(); // Get user ID
+        renderPlaylists(playlists);
+        show("playlistTable");
+        show("playlistControlTable");
+        // console.log(json);
+    }).catch(function(error) {
+        console.log(error);
+    });
 }
 
 function updateProfileInformation(json) {
-	const infoString = `username: ${json.id} has ${json.followers.total} follower(s) on Spotify`;
-	const profileInfoElement = document.querySelector('#profile_info');
-	profileInfoElement.textContent = infoString;
+    const infoString = `username: ${json.id} has ${json.followers.total} follower(s) on Spotify`;
+    const profileInfoElement = document.querySelector('#profile_info');
+    profileInfoElement.textContent = infoString;
 }
 
 function fetchProfileInformation() {
-	const currentQueryParameters = getCurrentQueryParameters('#');
-	ACCESS_TOKEN = currentQueryParameters.get('access_token');
+    const currentQueryParameters = getCurrentQueryParameters('#');
+    ACCESS_TOKEN = currentQueryParameters.get('access_token');
 
-	const fetchOptions = {
-		method: 'GET',
-		headers: new Headers({
-			'Authorization': `Bearer ${ACCESS_TOKEN}`
-		})
-	};
+    const fetchOptions = {
+        method: 'GET',
+        headers: new Headers({
+            'Authorization': `Bearer ${ACCESS_TOKEN}`
+        })
+    };
 
-	fetch(API_ENDPOINT + USER_ENDPOINT, fetchOptions).then(function (response) {
-		return response.json();
-	}).then(function (json) {
-		// console.log(json);
-		userID = json["id"];
-		userName = json["name"];
-		// updateProfileInformation(json);
-	}).catch(function (error) {
-		console.log(error);
-	});
+    fetch(API_ENDPOINT + USER_ENDPOINT, fetchOptions).then(function(response) {
+        return response.json();
+    }).then(function(json) {
+        // console.log(json);
+        userID = json["id"];
+        userName = json["name"];
+        // updateProfileInformation(json);
+    }).catch(function(error) {
+        console.log(error);
+    });
 }
 
 //GRAPHICS
 
 var boxSz;
-var x,y,z;
+var x, y, z;
 var label;
 var fontSize;
-backgroundCol = [0,0,0];
-cubeLineCol = [255,255,255];
-songPointsCol = [0,255,0];
+backgroundCol = [0, 0, 0];
+cubeLineCol = [255, 255, 255];
+songPointsCol = [0, 255, 0];
 
 let inconsolata;
+
 function preload() {
-  inconsolata = loadFont('fonts/RobotoMono-Light.ttf');
+    inconsolata = loadFont('fonts/RobotoMono-Light.ttf');
 }
 
 function setup() {
-	var elmnt = document.getElementById("graphic");
-	var width = elmnt.offsetWidth-10;
-	var height = window.innerHeight-10;
-	var myCanvas = createCanvas(width, height, WEBGL);
+    var elmnt = document.getElementById("graphic");
+    var width = elmnt.offsetWidth - 10;
+    var height = window.innerHeight - 10;
+    var myCanvas = createCanvas(width, height, WEBGL);
     myCanvas.parent("graphic");
-	frameRate(24);
-	boxSz = Math.round(Math.min(height, width) / 4); //scale by bit to ensure that the cube fits even on diagonal
+    frameRate(24);
+    boxSz = Math.round(Math.min(height, width) / 4); //scale by bit to ensure that the cube fits even on diagonal
 
-	textFont(inconsolata);
-	fontSize = Math.round(boxSz/10);
-  	textSize(fontSize);
+    textFont(inconsolata);
+    fontSize = Math.round(boxSz / 10);
+    textSize(fontSize);
 }
 
 function draw() {
-	background(backgroundCol);
-	rotateY(frameCount * 0.01)
-	n = visX.length-1;
+    background(backgroundCol);
+    rotateY(frameCount * 0.01)
+    n = visX.length - 1;
 
-	stroke(cubeLineCol);
+    stroke(cubeLineCol);
 
-	//front
-	line(-boxSz, -boxSz, boxSz, boxSz, -boxSz, boxSz);
-	line(-boxSz, boxSz, boxSz, boxSz, boxSz, boxSz);
-	line(-boxSz, -boxSz, boxSz, -boxSz, boxSz, boxSz);
-	line(boxSz, -boxSz, boxSz, boxSz, boxSz, boxSz);
-  
-	//back
-	line(-boxSz, -boxSz, -boxSz, boxSz, -boxSz, -boxSz);
-	line(-boxSz, boxSz, -boxSz, boxSz, boxSz, -boxSz);
-	line(-boxSz, -boxSz, -boxSz, -boxSz, boxSz, -boxSz);
-	line(boxSz, -boxSz, -boxSz, boxSz, boxSz, -boxSz);
-  
-	//left top
-	line(-boxSz, -boxSz, boxSz, -boxSz, -boxSz, -boxSz);
-	//left bottom
-	line(-boxSz, boxSz, -boxSz, -boxSz, boxSz, boxSz);
-	//right top
-	line(boxSz, -boxSz, boxSz, boxSz, -boxSz, -boxSz);
-	// // right bottom
-	line(boxSz, boxSz, -boxSz, boxSz, boxSz, boxSz);
+    //front
+    line(-boxSz, -boxSz, boxSz, boxSz, -boxSz, boxSz);
+    line(-boxSz, boxSz, boxSz, boxSz, boxSz, boxSz);
+    line(-boxSz, -boxSz, boxSz, -boxSz, boxSz, boxSz);
+    line(boxSz, -boxSz, boxSz, boxSz, boxSz, boxSz);
 
-	//labels
-	fill([255,255,255]);
-	label = varX + "/ " + varY + "/ " + varZ + "/ ";
-	text(label, -boxSz, -boxSz-fontSize);
-	fill([0,255,0]);
-	text("start/", -boxSz, -boxSz);
-	fill([0,0,255]);
-	text("end/", -boxSz+fontSize*4, -boxSz);
-	// Points
+    //back
+    line(-boxSz, -boxSz, -boxSz, boxSz, -boxSz, -boxSz);
+    line(-boxSz, boxSz, -boxSz, boxSz, boxSz, -boxSz);
+    line(-boxSz, -boxSz, -boxSz, -boxSz, boxSz, -boxSz);
+    line(boxSz, -boxSz, -boxSz, boxSz, boxSz, -boxSz);
 
-	maxX = Math.max(...visX);
-	minX = Math.min(...visX);
-	maxY = Math.max(...visY);
-	minY = Math.min(...visY);
-	maxZ = Math.max(...visZ);
-	minZ = Math.min(...visZ);
+    //left top
+    line(-boxSz, -boxSz, boxSz, -boxSz, -boxSz, -boxSz);
+    //left bottom
+    line(-boxSz, boxSz, -boxSz, -boxSz, boxSz, boxSz);
+    //right top
+    line(boxSz, -boxSz, boxSz, boxSz, -boxSz, -boxSz);
+    // // right bottom
+    line(boxSz, boxSz, -boxSz, boxSz, boxSz, boxSz);
 
-	stroke(songPointsCol);
+    //labels
+    fill([255, 255, 255]);
+    label = varX + "/ " + varY + "/ " + varZ + "/ ";
+    text(label, -boxSz, -boxSz - fontSize);
+    fill([0, 255, 0]);
+    text("start/", -boxSz, -boxSz);
+    fill([0, 0, 255]);
+    text("end/", -boxSz + fontSize * 4, -boxSz);
+    // Points
 
-	let inc = 255.0 / n;
-	let x1, y1, z1;
+    maxX = Math.max(...visX);
+    minX = Math.min(...visX);
+    maxY = Math.max(...visY);
+    minY = Math.min(...visY);
+    maxZ = Math.max(...visZ);
+    minZ = Math.min(...visZ);
 
-	if (reordered) {
-		for (var i = 0; i <= n; i++) {
-			stroke([0, Math.round(255.0 - i*inc),Math.round(i*inc)]);
-			tracksIndex = relativeOrder[i]
-			push();
-			x = map(visX[tracksIndex], minX, maxX, -boxSz, boxSz);
-			y = map(visY[tracksIndex], minY, maxY, -boxSz, boxSz);
-			z = map(visZ[tracksIndex], minZ, maxZ, -boxSz, boxSz);
-			translate(x,y,z);
-			sphere(boxSz / 50, 8);
-			pop();
-			//Lines
-			if (i > 0) {
-				line(x, y, z, x1, y1, z1);
-			}
-			x1 = x;
-			y1 = y;
-			z1 = z;
-				
-		}
-	} else {
-		for (var i = 0; i <= n; i++) {
-			stroke([0, Math.round(255.0 - i*inc),Math.round(i*inc)]);
-			push();
-			x = map(visX[i], minX, maxX, -boxSz, boxSz);
-			y = map(visY[i], minY, maxY, -boxSz, boxSz);
-			z = map(visZ[i], minZ, maxZ, -boxSz, boxSz);
-			translate(x,y,z);
-			sphere(boxSz / 50, 8);
-			pop();	
-			//Lines
-			if (i > 0) {
-				line(x, y, z, x1, y1, z1);
-			}
-			x1 = x;
-			y1 = y;
-			z1 = z;
-		}
-	}
+    stroke(songPointsCol);
+
+    let inc = 255.0 / n;
+    let x1, y1, z1;
+
+    if (reordered) {
+        for (var i = 0; i <= n; i++) {
+            stroke([0, Math.round(255.0 - i * inc), Math.round(i * inc)]);
+            tracksIndex = relativeOrder[i]
+            push();
+            x = map(visX[tracksIndex], minX, maxX, -boxSz, boxSz);
+            y = map(visY[tracksIndex], minY, maxY, -boxSz, boxSz);
+            z = map(visZ[tracksIndex], minZ, maxZ, -boxSz, boxSz);
+            translate(x, y, z);
+            sphere(boxSz / 50, 8);
+            pop();
+            //Lines
+            if (i > 0) {
+                line(x, y, z, x1, y1, z1);
+            }
+            x1 = x;
+            y1 = y;
+            z1 = z;
+
+        }
+    } else {
+        for (var i = 0; i <= n; i++) {
+            stroke([0, Math.round(255.0 - i * inc), Math.round(i * inc)]);
+            push();
+            x = map(visX[i], minX, maxX, -boxSz, boxSz);
+            y = map(visY[i], minY, maxY, -boxSz, boxSz);
+            z = map(visZ[i], minZ, maxZ, -boxSz, boxSz);
+            translate(x, y, z);
+            sphere(boxSz / 50, 8);
+            pop();
+            //Lines
+            if (i > 0) {
+                line(x, y, z, x1, y1, z1);
+            }
+            x1 = x;
+            y1 = y;
+            z1 = z;
+        }
+    }
 }
 
 //UTILS
 
 function getRandomInt(min, max) {
-	min = Math.ceil(min);
-	max = Math.floor(max);
-	return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
 }
 
 function renderPlaylists(playlists) {
-	// Clear nodes
-	document.getElementById("playlist0").innerHTML = "";
-	document.getElementById("playlist1").innerHTML = "";
-	document.getElementById("playlist2").innerHTML = "";
-	document.getElementById("playlist3").innerHTML = "";
-	document.getElementById("playlist4").innerHTML = "";
+    // Clear nodes
+    document.getElementById("playlist0").innerHTML = "";
+    document.getElementById("playlist1").innerHTML = "";
+    document.getElementById("playlist2").innerHTML = "";
+    document.getElementById("playlist3").innerHTML = "";
+    document.getElementById("playlist4").innerHTML = "";
 
-	document.getElementById("playlist0").innerHTML = playlists[0]["name"] + " | ";
-	document.getElementById("playlist1").innerHTML = playlists[1]["name"] + " | ";
-	document.getElementById("playlist2").innerHTML = playlists[2]["name"] + " | ";
-	document.getElementById("playlist3").innerHTML = playlists[3]["name"] + " | ";
-	document.getElementById("playlist4").innerHTML = playlists[4]["name"] + " | ";
-	// console.log(playlists);
-	//Set playlists
-	let title = "PLAY ON SPOTIFY";
-	let linkText = "Play on Spotify";
+    document.getElementById("playlist0").innerHTML = playlists[0]["name"] + " | ";
+    document.getElementById("playlist1").innerHTML = playlists[1]["name"] + " | ";
+    document.getElementById("playlist2").innerHTML = playlists[2]["name"] + " | ";
+    document.getElementById("playlist3").innerHTML = playlists[3]["name"] + " | ";
+    document.getElementById("playlist4").innerHTML = playlists[4]["name"] + " | ";
+    // console.log(playlists);
+    //Set playlists
+    let title = "PLAY ON SPOTIFY";
+    let linkText = "Play on Spotify";
 
-	 a = createLinkNode(linkText, title, playlists[0]["external_urls"]["spotify"])
-	 document.getElementById("playlist0").appendChild(a);
- 
-	 a = createLinkNode(linkText, title, playlists[1]["external_urls"]["spotify"])
-	 document.getElementById("playlist1").appendChild(a);
- 
-	 a = createLinkNode(linkText, title, playlists[2]["external_urls"]["spotify"])
-	 document.getElementById("playlist2").appendChild(a);
- 
-	 a = createLinkNode(linkText, title, playlists[3]["external_urls"]["spotify"])
-	 document.getElementById("playlist3").appendChild(a);
- 
-	 a = createLinkNode(linkText, title, playlists[4]["external_urls"]["spotify"])
-	 document.getElementById("playlist4").appendChild(a);
-	// let title = "PLAY ON SPOTIFY";
+    a = createLinkNode(linkText, title, playlists[0]["external_urls"]["spotify"])
+    document.getElementById("playlist0").appendChild(a);
 
-	// a = createLinkNode(playlists[0]["name"], title, playlists[0]["external_urls"]["spotify"])
-	// document.getElementById("playlist0").appendChild(a);
+    a = createLinkNode(linkText, title, playlists[1]["external_urls"]["spotify"])
+    document.getElementById("playlist1").appendChild(a);
 
-	// a = createLinkNode(playlists[1]["name"], title, playlists[1]["external_urls"]["spotify"])
-	// document.getElementById("playlist1").appendChild(a);
+    a = createLinkNode(linkText, title, playlists[2]["external_urls"]["spotify"])
+    document.getElementById("playlist2").appendChild(a);
 
-	// a = createLinkNode(playlists[2]["name"], title, playlists[2]["external_urls"]["spotify"])
-	// document.getElementById("playlist2").appendChild(a);
+    a = createLinkNode(linkText, title, playlists[3]["external_urls"]["spotify"])
+    document.getElementById("playlist3").appendChild(a);
 
-	// a = createLinkNode(playlists[3]["name"], title, playlists[3]["external_urls"]["spotify"])
-	// document.getElementById("playlist3").appendChild(a);
+    a = createLinkNode(linkText, title, playlists[4]["external_urls"]["spotify"])
+    document.getElementById("playlist4").appendChild(a);
+    // let title = "PLAY ON SPOTIFY";
 
-	// a = createLinkNode(playlists[4]["name"], title, playlists[4]["external_urls"]["spotify"])
-	// document.getElementById("playlist4").appendChild(a);
-	
-	// document.getElementById("playlist0").innerHTML = playlists[0]["name"];
-	// document.getElementById("playlist1").innerHTML = playlists[1]["name"];
-	// document.getElementById("playlist2").innerHTML = playlists[2]["name"];
-	// document.getElementById("playlist3").innerHTML = playlists[3]["name"];
-	// document.getElementById("playlist4").innerHTML = playlists[4]["name"];
+    // a = createLinkNode(playlists[0]["name"], title, playlists[0]["external_urls"]["spotify"])
+    // document.getElementById("playlist0").appendChild(a);
+
+    // a = createLinkNode(playlists[1]["name"], title, playlists[1]["external_urls"]["spotify"])
+    // document.getElementById("playlist1").appendChild(a);
+
+    // a = createLinkNode(playlists[2]["name"], title, playlists[2]["external_urls"]["spotify"])
+    // document.getElementById("playlist2").appendChild(a);
+
+    // a = createLinkNode(playlists[3]["name"], title, playlists[3]["external_urls"]["spotify"])
+    // document.getElementById("playlist3").appendChild(a);
+
+    // a = createLinkNode(playlists[4]["name"], title, playlists[4]["external_urls"]["spotify"])
+    // document.getElementById("playlist4").appendChild(a);
+
+    // document.getElementById("playlist0").innerHTML = playlists[0]["name"];
+    // document.getElementById("playlist1").innerHTML = playlists[1]["name"];
+    // document.getElementById("playlist2").innerHTML = playlists[2]["name"];
+    // document.getElementById("playlist3").innerHTML = playlists[3]["name"];
+    // document.getElementById("playlist4").innerHTML = playlists[4]["name"];
 }
 
-function createLinkNode(text, title, href){
-	var a = document.createElement('a');
-	var linkText = document.createTextNode(text);
-	a.appendChild(linkText);
-	a.title = title;
-	a.target = "_blank";
-	a.href = href;
-	return a;
+function createLinkNode(text, title, href) {
+    var a = document.createElement('a');
+    var linkText = document.createTextNode(text);
+    a.appendChild(linkText);
+    a.title = title;
+    a.target = "_blank";
+    a.href = href;
+    return a;
 }
 
 function renderTracks(items) {
-	for (let i = 0; i < items.length; i++) {
-		let text = items[i]["track"]["name"] + ", " + items[i]["track"]["artists"][0]["name"]+" //";
-		let title = "LISTEN ON SPOTIFY";
-		let href = items[i]["track"]["external_urls"]["spotify"];
-		a = createLinkNode(text, title, href);
-      	document.getElementById("trackdiv").appendChild(a); 
-	}
+    for (let i = 0; i < items.length; i++) {
+        let text = items[i]["track"]["name"] + ", " + items[i]["track"]["artists"][0]["name"] + " //";
+        let title = "LISTEN ON SPOTIFY";
+        let href = items[i]["track"]["external_urls"]["spotify"];
+        a = createLinkNode(text, title, href);
+        document.getElementById("trackdiv").appendChild(a);
+    }
 }
 
 function hideAllOnStartup() {
-	//Set visibilities on load
-	let elem = document.getElementById("fetchPlaylistsButtonElement");
-	elem.style.visibility='hidden';
+    //Set visibilities on load
+    let elem = document.getElementById("fetchPlaylistsButtonElement");
+    elem.style.visibility = 'hidden';
 
-	elem = document.getElementById("playlistTable");
-	elem.style.visibility='hidden';
+    elem = document.getElementById("playlistTable");
+    elem.style.visibility = 'hidden';
 
-	elem = document.getElementById("playlistControlTable");
-	elem.style.visibility='hidden';
-	
-	elem = document.getElementById("optimiseButtonElement");
-	elem.style.visibility='hidden';
+    elem = document.getElementById("playlistControlTable");
+    elem.style.visibility = 'hidden';
+
+    elem = document.getElementById("optimiseButtonElement");
+    elem.style.visibility = 'hidden';
 }
 
 function show(id) {
-	//Set visibilities on load
-	let elem = document.getElementById(id);
-	elem.style.visibility='visible';
+    //Set visibilities on load
+    let elem = document.getElementById(id);
+    elem.style.visibility = 'visible';
 }
