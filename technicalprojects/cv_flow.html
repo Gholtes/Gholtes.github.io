@@ -44,8 +44,6 @@
 
     <p>If each building block could be abstracted as a function, this is equivalent to simply calling the functions in (topological) order. </p>
 
-    CODE EXAMPLE
-
     <p>This approach is inefficient as no work is done in parallel, complexity (3). This inefficiency is particularly problematic when dealing with lengthly GPU inference, during which CPU computation or IO tasks could be competed. </p>
     <p>An improvement would be to process a second input through the pipeline at the same time, using the spare CPU capacity in the first input to process the second input. This would require the use of threads or processes to provide parallel processing.</p>
 
