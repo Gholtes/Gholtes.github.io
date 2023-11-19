@@ -1,0 +1,82 @@
+:root {
+    --text-colour: rgb(122, 78, 28);
+    --text-hl-colour: rgb(77, 25, 25);
+    --text-bg-colour:rgb(204, 161, 111);
+    --text-bg-hl-colour: rgb(195, 142, 82);
+  }
+
+.backgroundimage {
+    background-image: url(../assets/creativeprojects/digital_cube_space/esher0.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    z-index: 1;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    position:fixed;
+}
+
+.title {
+    font-size: max(5.9vh, 18pt);
+    font-family: sans-serif;
+    background-color: var(--text-bg-colour);
+    color: var(--text-colour);
+    z-index: 99;
+    position:fixed;
+    opacity: 0.85;
+    background-blend-mode: overlay;
+}
+
+.itembox {
+    padding: 7px 5px 7px 5px;
+    /* background-color: blue; */
+}
+
+.item {
+    padding: 2px;
+    font-size: max(2.5vh, 11pt);
+    font-family: sans-serif;
+    color: var(--text-colour);
+    background-color: var(--text-bg-colour);
+    /* background-blend-mode: overlay; */
+    /* opacity: 0.85;  */
+    transition: 0.1s;
+}
+
+.item:hover {
+    font-size: max(3.25vh, 14pt);
+    background-color: var(--text-bg-hl-colour);
+}
+
+.item.large {
+    font-size: max(4vh, 14pt);
+}
+
+.item.large:hover {
+    font-size: max(5vh, 16pt);
+}
+
+.item.large.a:hover {
+    text-decoration: none;
+}
+
+.scrollable_list {
+    top: 10vh;
+    z-index: 10;
+    position:absolute;
+    width: 75%;
+
+}
+
+a {
+    color: var(--text-colour);
+    cursor: cell;
+    /* text-decoration: none; */
+    font-family: sans-serif;
+}
+
+a:hover {
+    color: rgb(255, 0, 0);
+    color: var(--text-hl-colour);
+}
