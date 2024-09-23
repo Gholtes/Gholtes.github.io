@@ -1,12 +1,26 @@
 :root {
-    --accent-colour:#005CDE;
-    --text-accent-colour: #0047AB;
+    --accent-colour-left: #019658; /*#005CDE;*/
+    --accent-colour-right: #f6eee3; /*#005CDE;*/
+    --text-left-color: #fefaf4;
+    --text-right-accent-colour: #005733; /*#0047AB;*/
   }
 
 body {
-    font-family: JetBrains Mono, monospace;
-    font-weight: 400;
+    font-family: "Noto Sans Display", serif; /*  "JetBrains Mono", monospace; */
+    font-size: 10.5pt;
+    font-weight: 300;
+    font-style: normal;
+    font-variation-settings: "wdth" 100;
     margin: 0px;
+}
+
+H1 {
+    font-family: "Noto Serif Display", serif; /* VT323, monospace;*/
+    font-size: 8vh;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
+    font-variation-settings: "wdth" 87.5;
 }
 
 
@@ -21,35 +35,19 @@ body {
 }
 
 
-@media only screen and (max-width: 800px) {
-    .grid-container {
-        display: grid;
-        grid-template-areas: 'gridleft' 'gridright';
-        width: 100%;
-        grid-template-columns: minmax(0, 1fr);
-        grid-template-rows: auto; /* prevent a scrolling issue on phones */ 
-    }
-}
-
-
 /* Grid items */
 
 .grid-item {
     color: #000000;
-    font-size: 12px;
     padding: 10px;
     background: #FFFFFF;
 }
 
-/* .grid-item:hover {
-    background: #00FF00;
-} */
-
 .grid-item.gridleft {
     grid-area: gridleft;
     padding: 10px 10px 10px 40%;
-    color: #FFFFFF;
-    background: var(--accent-colour);
+    color: var(--text-left-color);
+    background: var(--accent-colour-left);
     overflow: auto;  
 }
 
@@ -57,6 +55,7 @@ body {
     grid-area: gridright;
     padding: 10px 40% 10px 10px;
     overflow: auto;   
+    background: var(--accent-colour-right);
 }
 
 
@@ -70,7 +69,14 @@ body {
 }
 
 /* Phones */
-@media only screen and (max-width: 800px) {
+@media only screen and (max-width: 900px) {
+    .grid-container {
+        display: grid;
+        grid-template-areas: 'gridleft' 'gridright';
+        width: 100%;
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto; /* prevent a scrolling issue on phones */ 
+    }
     .grid-item.gridleft {
         padding: 10px 5% 10px 5%;
     }
@@ -82,11 +88,11 @@ body {
 /* Text formats */
 
 a {
-    color: var(--text-accent-colour);
+    color: var(--text-right-accent-colour);
     cursor: cell;
     text-decoration: none;
     font-weight: bold;
-    font-weight: 600;
+    font-weight: 500;
 }
 
 a:hover {
@@ -94,15 +100,18 @@ a:hover {
 }
 
 .grid-item.gridleft a{
-    color: #ffffff;
+    color: var(--text-left-color);
     cursor: cell;
     text-decoration: underline;
     font-weight: bold;
-    font-weight: 600;
+    font-weight: 500;
 }
 
-H1 {
-    font-family: VT323, monospace;
-    font-size: 6vh;
+.grid-item.gridleft b{
+    color: var(--text-left-color);
+    font-weight: bold;
+    font-weight: 500;
 }
+
+
 
