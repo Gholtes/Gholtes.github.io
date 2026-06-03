@@ -1,7 +1,7 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg: #f9f8f6;
+    --bg: #FEF9ED;
     --text: #37352f;
     --muted: #9b9790;
     --subtle: #e8e6e1;
@@ -15,7 +15,7 @@
   body {
     background: var(--bg);
     color: var(--text);
-    font-family: 'Inter', sans-serif;
+    font-family: 'Lora', serif;
     font-weight: 300;
     font-size: 15px;
     line-height: 1.75;
