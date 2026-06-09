@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Relief — contour overlays from your photos</title>
+<style>
+  :root{
+    --bg:#ffffff;          /* page / panels                  */
+    --stage:#f6f5f3;        /* preview backdrop, near-white   */
+    --ink:#141414;          /* primary text / lines           */
+    --ink-2:#8a8a85;        /* muted labels, years            */
+    --ink-3:#bcbcb6;        /* faint                          */
+    --hair:#e6e4df;         /* hairline rules                 */
+    --field:#fafaf8;        /* input wells                    */
+    --sans:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    font-family:var(--sans);
+    color:var(--ink);
+    background:var(--bg);
+    -webkit-font-smoothing:antialiased;
+    font-size:15px;
+    line-height:1.55;
+  }
+  .app{
+    display:grid;
+    grid-template-columns:380px 1fr;
+    height:100vh;
+  }
+
+  /* ---------------- control panel ---------------- */
+  .panel{
+    background:var(--bg);
+    border-right:1px solid var(--hair);
+    overflow-y:auto;
+    display:flex;
+    flex-direction:column;
+  }
+  .brand{
+    padding:40px 38px 30px;
+  }
+  .eyebrow{
+    font-size:13px;
+    color:var(--ink-2);
+    margin:0 0 14px;
+  }
+  .brand h1{
+    font-weight:600;
+    font-size:34px;
+    line-height:1.05;
+    letter-spacing:-.015em;
+    margin:0 0 14px;
+  }
+  .brand p{
+    margin:0;
+    font-size:14px;
+    line-height:1.6;
+    color:var(--ink-2);
+    max-width:34ch;
+  }
+
+  .controls{padding:0 38px 38px;}
+  fieldset{border:0;margin:0;padding:26px 0;border-top:1px solid var(--hair);}
+  legend{
+    font-size:14px;
+    font-weight:600;
+    color:var(--ink);
+    padding:0;
+    margin-bottom:20px;
+    display:flex;
+    align-items:baseline;
+    gap:12px;
+    width:100%;
+  }
+  legend .idx{color:var(--ink-3);font-weight:400;font-variant-numeric:tabular-nums;}
+
+  .row{margin-bottom:20px;}
+  .row:last-child{margin-bottom:0;}
+  .row label{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    font-size:14px;
+    font-weight:400;
+    margin-bottom:10px;
+  }
+  .row label .val{
+    font-size:13px;
+    color:var(--ink-2);
+    font-variant-numeric:tabular-nums;
+  }
+
+  input[type=range]{
+    -webkit-appearance:none;appearance:none;
+    width:100%;height:1px;background:var(--hair);margin:8px 0;cursor:pointer;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none;appearance:none;width:13px;height:13px;border-radius:50%;
+    background:var(--ink);border:none;cursor:pointer;transition:transform .1s ease;
+  }
+  input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.25);}
+  input[type=range]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;background:var(--ink);border:none;cursor:pointer;}
+
+  .coords{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .coords .field-wrap label{font-size:13px;color:var(--ink-2);margin-bottom:7px;display:block;}
+  input[type=text]{
+    width:100%;font-family:var(--sans);font-size:14px;color:var(--ink);
+    background:var(--field);border:1px solid var(--hair);border-radius:4px;padding:10px 11px;
+    font-variant-numeric:tabular-nums;
+  }
+  input[type=text]:focus{outline:none;border-color:var(--ink);}
+
+  .swatch-row{display:flex;align-items:center;gap:14px;}
+  input[type=color]{
+    -webkit-appearance:none;appearance:none;width:40px;height:40px;border:1px solid var(--hair);
+    border-radius:4px;padding:0;background:none;cursor:pointer;
+  }
+  input[type=color]::-webkit-color-swatch-wrapper{padding:4px;}
+  input[type=color]::-webkit-color-swatch{border:none;border-radius:2px;}
+  .swatch-presets{display:flex;gap:8px;}
+  .preset{width:22px;height:22px;border-radius:3px;border:1px solid rgba(0,0,0,.14);cursor:pointer;padding:0;transition:transform .1s ease;}
+  .preset:hover{transform:scale(1.14);}
+
+  button.action{
+    font-family:var(--sans);font-size:14px;font-weight:500;cursor:pointer;
+    border-radius:4px;padding:11px 14px;border:1px solid var(--ink);background:var(--bg);color:var(--ink);
+    transition:background .12s ease,color .12s ease;width:100%;
+  }
+  button.action:hover{background:var(--ink);color:#fff;}
+  button.primary{background:var(--ink);color:#fff;border-color:var(--ink);}
+  button.primary:hover{background:#000;}
+  button.primary:disabled{opacity:.3;cursor:not-allowed;background:var(--bg);color:var(--ink-3);border-color:var(--hair);}
+
+  .apply-loc{margin-top:14px;}
+
+  /* ---------------- preview stage ---------------- */
+  .stage{
+    position:relative;flex:1;min-height:0;display:flex;align-items:center;justify-content:center;
+    padding:48px;overflow:hidden;background:var(--stage);
+  }
+  .canvas-frame{
+    position:relative;max-width:100%;max-height:100%;
+    border:1px solid var(--hair);
+    box-shadow:0 12px 40px -22px rgba(20,20,20,.45);
+    background:var(--bg);line-height:0;
+  }
+  #view{max-width:100%;max-height:calc(100vh - 96px);display:block;}
+
+  /* dropzone */
+  .dropzone{
+    position:absolute;inset:48px;border:1px dashed var(--hair);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;
+    background:var(--bg);text-align:center;padding:40px;transition:border-color .15s ease;
+  }
+  .dropzone.hot{border-color:var(--ink);}
+  .dropzone .mark{
+    width:52px;height:52px;border-radius:50%;border:1px solid var(--ink);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .dropzone .mark svg{width:22px;height:22px;}
+  .dropzone h2{font-weight:600;font-size:21px;margin:0;letter-spacing:-.01em;}
+  .dropzone p{margin:0;font-size:14px;color:var(--ink-2);max-width:340px;line-height:1.6;}
+  .dropzone .hint{font-size:13px;color:var(--ink-3);}
+
+  /* status pill */
+  .status{
+    position:absolute;left:50%;bottom:28px;transform:translateX(-50%);
+    font-size:13px;
+    background:var(--ink);color:#fff;padding:9px 16px;border-radius:4px;
+    display:none;align-items:center;gap:10px;box-shadow:0 8px 24px -10px rgba(0,0,0,.4);
+    max-width:80%;
+  }
+  .status.show{display:flex;}
+  .status.warn{background:var(--bg);color:var(--ink);border:1px solid var(--ink);}
+  .spinner{width:12px;height:12px;border:1.5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;flex:none;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  /* readout strip */
+  .readout{
+    display:none;border-top:1px solid var(--hair);background:var(--bg);
+    padding:18px 38px;gap:36px;
+  }
+  .readout.show{display:flex;flex-wrap:wrap;}
+  .readout .metric{display:flex;flex-direction:column;gap:4px;}
+  .readout .metric .k{font-size:12px;color:var(--ink-2);}
+  .readout .metric .v{font-size:14px;color:var(--ink);font-variant-numeric:tabular-nums;}
+
+  .footnote{font-size:13px;color:var(--ink-2);line-height:1.6;margin-top:22px;}
+  .footnote a{color:var(--ink);text-decoration:underline;text-underline-offset:2px;}
+
+  @media (max-width:880px){
+    .app{grid-template-columns:1fr;grid-template-rows:auto 1fr;height:auto;min-height:100vh;}
+    .panel{border-right:0;border-bottom:1px solid var(--hair);max-height:none;}
+    .brand{padding:32px 26px 24px;}
+    .controls{padding:0 26px 28px;}
+    .readout{padding:18px 26px;}
+    #view{max-height:60vh;}
+    .stage{min-height:50vh;padding:28px;}
+    .dropzone{inset:28px;}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- ============ CONTROL PANEL ============ -->
+  <aside class="panel">
+    <div class="brand">
+      <p class="eyebrow">Topographic overlay</p>
+      <h1>Relief</h1>
+      <p>Drop in a geotagged photo. It reads the location from the image and draws the surrounding terrain as contour lines across the frame.</p>
+    </div>
+
+    <div class="controls">
+      <fieldset>
+        <legend><span class="idx">01</span> Location</legend>
+        <div class="coords">
+          <div class="field-wrap">
+            <label for="lat">Latitude</label>
+            <input type="text" id="lat" inputmode="decimal" placeholder="—" />
+          </div>
+          <div class="field-wrap">
+            <label for="lon">Longitude</label>
+            <input type="text" id="lon" inputmode="decimal" placeholder="—" />
+          </div>
+        </div>
+        <button class="action apply-loc" id="applyLoc">Apply location</button>
+      </fieldset>
+
+      <fieldset>
+        <legend><span class="idx">02</span> Terrain</legend>
+        <div class="row">
+          <label for="scale">Capture area <span class="val"><span id="scaleV">4.0</span> km across</span></label>
+          <input type="range" id="scale" min="0.5" max="25" step="0.5" value="4" />
+        </div>
+        <div class="row">
+          <label for="minEl">Min elevation <span class="val"><span id="minElV">0</span> m</span></label>
+          <input type="range" id="minEl" min="0" max="3000" step="10" value="0" />
+        </div>
+        <div class="row">
+          <label for="interval">Contour interval <span class="val"><span id="intervalV">25</span> m</span></label>
+          <input type="range" id="interval" min="5" max="250" step="5" value="25" />
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend><span class="idx">03</span> Line</legend>
+        <div class="row">
+          <div class="swatch-row">
+            <input type="color" id="color" value="#ffffff" />
+            <div class="swatch-presets">
+              <button class="preset" data-c="#ffffff" style="background:#fff"></button>
+              <button class="preset" data-c="#15181c" style="background:#15181c"></button>
+              <button class="preset" data-c="#b4541e" style="background:#b4541e"></button>
+              <button class="preset" data-c="#e8c84a" style="background:#e8c84a"></button>
+              <button class="preset" data-c="#5ad1c8" style="background:#5ad1c8"></button>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <label for="weight">Line weight <span class="val"><span id="weightV">0.8</span> px</span></label>
+          <input type="range" id="weight" min="0.3" max="10" step="0.1" value="0.8" />
+        </div>
+        <div class="row">
+          <label for="opacity">Line opacity <span class="val"><span id="opacityV">100</span>%</span></label>
+          <input type="range" id="opacity" min="10" max="100" step="5" value="100" />
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend><span class="idx">04</span> Placement</legend>
+        <div class="row">
+          <label for="hSize">Horizontal size <span class="val"><span id="hSizeV">60</span>%</span></label>
+          <input type="range" id="hSize" min="10" max="100" step="1" value="60" />
+        </div>
+        <div class="row">
+          <label for="vSize">Vertical size <span class="val"><span id="vSizeV">45</span>%</span></label>
+          <input type="range" id="vSize" min="10" max="100" step="1" value="45" />
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend><span class="idx">05</span> Output</legend>
+        <div class="row"><button class="action" id="changeImg">Replace photo</button></div>
+        <div class="row"><button class="action primary" id="download" disabled>Download PNG</button></div>
+        <p class="footnote">Elevation from the <a href="https://registry.opendata.aws/terrain-tiles/" target="_blank" rel="noopener">AWS Terrain Tiles</a> dataset. Photos and locations stay in your browser — nothing is uploaded.</p>
+      </fieldset>
+    </div>
+  </aside>
+
+  <!-- ============ PREVIEW STAGE ============ -->
+  <main style="display:flex;flex-direction:column;min-width:0;">
+    <div class="stage" id="stage">
+      <div class="canvas-frame" id="frame" style="display:none;">
+        <canvas id="view"></canvas>
+      </div>
+
+      <div class="dropzone" id="dropzone">
+        <div class="mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>
+          </svg>
+        </div>
+        <h2>Drop a photo to begin</h2>
+        <p>A geotagged image — most phone photos qualify. If there's no location data, type coordinates under <strong>Location</strong> and apply.</p>
+        <span class="hint">JPEG, PNG or HEIC · or click to browse</span>
+      </div>
+
+      <div class="status" id="status"><span class="spinner" id="spin"></span><span id="statusText">Working…</span></div>
+    </div>
+
+    <div class="readout" id="readout">
+      <div class="metric"><span class="k">Center</span><span class="v" id="rCenter">—</span></div>
+      <div class="metric"><span class="k">Elevation range</span><span class="v" id="rRange">—</span></div>
+      <div class="metric"><span class="k">Contours drawn</span><span class="v" id="rCount">—</span></div>
+      <div class="metric"><span class="k">Detail</span><span class="v" id="rZoom">—</span></div>
+    </div>
+  </main>
+</div>
+
+<input type="file" id="file" accept="image/*" style="display:none" />
+
+<script type="module">
+/* ---------- elevation: AWS terrarium terrain tiles ---------- */
+const TILE = 256;
+const terrainURL = (z,x,y) => `https://s3.amazonaws.com/elevation-tiles-prod/terrarium/${z}/${x}/${y}.png`;
+
+const lon2tileF = (lon,z) => (lon+180)/360*2**z;
+const lat2tileF = (lat,z) => {
+  const r = lat*Math.PI/180;
+  return (1 - Math.log(Math.tan(r)+1/Math.cos(r))/Math.PI)/2 * 2**z;
+};
+
+const tileCache = new Map();
+function loadTile(z,x,y){
+  const key = `${z}/${x}/${y}`;
+  if (tileCache.has(key)) return tileCache.get(key);
+  const p = new Promise((res,rej)=>{
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => res(img);
+    img.onerror = () => rej(new Error('tile '+key));
+    img.src = terrainURL(z,x,y);
+  });
+  tileCache.set(key,p);
+  return p;
+}
+
+function chooseZoom(widthKm, lat){
+  const res = (widthKm*1000)/700;                 // target ~700px across capture
+  let z = Math.log2(156543.03*Math.cos(lat*Math.PI/180)/res);
+  return Math.max(2, Math.min(14, Math.round(z)));
+}
+
+// Fetch a square terrain extent centered on lat/lon, decode to an elevation grid.
+async function buildGrid(lat, lon, widthKm){
+  const halfLat = (widthKm/2)/110.574;
+  const halfLon = (widthKm/2)/(111.320*Math.cos(lat*Math.PI/180));
+  const west=lon-halfLon, east=lon+halfLon, north=lat+halfLat, south=lat-halfLat;
+  const z = chooseZoom(widthKm, lat);
+
+  const xt0=Math.floor(lon2tileF(west,z)),  xt1=Math.floor(lon2tileF(east,z));
+  const yt0=Math.floor(lat2tileF(north,z)), yt1=Math.floor(lat2tileF(south,z));
+  const nx=xt1-xt0+1, ny=yt1-yt0+1;
+  if (nx*ny > 64) throw new Error('Area too large for this detail — reduce capture size.');
+
+  const stitch = document.createElement('canvas');
+  stitch.width=nx*TILE; stitch.height=ny*TILE;
+  const sctx = stitch.getContext('2d',{willReadFrequently:true});
+
+  await Promise.all(
+    Array.from({length:nx},(_,dx)=>Array.from({length:ny},(_,dy)=>[xt0+dx,yt0+dy])).flat()
+      .map(([tx,ty])=>loadTile(z,tx,ty).then(img=>sctx.drawImage(img,(tx-xt0)*TILE,(ty-yt0)*TILE)))
+  );
+
+  // sub-rectangle of the stitched image corresponding to the bbox
+  const gx0=(lon2tileF(west,z)-xt0)*TILE, gx1=(lon2tileF(east,z)-xt0)*TILE;
+  const gy0=(lat2tileF(north,z)-yt0)*TILE, gy1=(lat2tileF(south,z)-yt0)*TILE;
+
+  const MAXG = 700;
+  let gw=Math.max(4,Math.round(gx1-gx0)), gh=Math.max(4,Math.round(gy1-gy0));
+  const sxStep = gw>MAXG ? gw/MAXG : 1;
+  const syStep = gh>MAXG ? gh/MAXG : 1;
+  if (gw>MAXG) gw=MAXG;
+  if (gh>MAXG) gh=MAXG;
+
+  const data = sctx.getImageData(0,0,stitch.width,stitch.height).data;
+  const W=stitch.width, H=stitch.height;
+  const values = new Float32Array(gw*gh);
+  let min=Infinity, max=-Infinity;
+  for (let j=0;j<gh;j++){
+    const py = Math.min(H-1, Math.round(gy0 + j*syStep));
+    for (let i=0;i<gw;i++){
+      const px = Math.min(W-1, Math.round(gx0 + i*sxStep));
+      const o = (py*W+px)*4;
+      const e = (data[o]*256 + data[o+1] + data[o+2]/256) - 32768;
+      values[j*gw+i] = e;
+      if (e<min) min=e; if (e>max) max=e;
+    }
+  }
+  return { values, gw, gh, min, max, z };
+}
+
+/* ---------- contours (d3-contour) ---------- */
+let d3contours = null;
+async function ensureContours(){
+  if (!d3contours){
+    const m = await import('https://cdn.jsdelivr.net/npm/d3-contour@4/+esm');
+    d3contours = m.contours;
+  }
+  return d3contours;
+}
+async function makeContours(grid, minElev, interval){
+  const contours = await ensureContours();
+  const CAP = 250;                                   // perf ceiling on line count
+  const base = Math.max(minElev, Math.ceil(minElev/interval)*interval);
+  // Cover the whole range up to the highest point. If the requested interval
+  // would produce more lines than the cap, widen the spacing rather than
+  // dropping the highest lines — otherwise summits get cut off.
+  let step = interval;
+  const span = grid.max - base;
+  if (span > 0){
+    const need = Math.floor(span/step) + 1;
+    if (need > CAP) step = interval * Math.ceil(need/CAP);
+  }
+  effInterval = step;
+  const thresholds = [];
+  for (let t=base; t<=grid.max; t+=step) thresholds.push(t);
+  if (!thresholds.length) return [];
+  const vals = Array.from(grid.values);
+  return contours().size([grid.gw,grid.gh]).thresholds(thresholds)(vals);
+}
+
+/* ---------- EXIF GPS (exifr, optional) ---------- */
+async function readGPS(file){
+  try{
+    const exifr = (await import('https://cdn.jsdelivr.net/npm/exifr@7/dist/full.esm.mjs')).default;
+    const gps = await exifr.gps(file);
+    if (gps && Number.isFinite(gps.latitude) && Number.isFinite(gps.longitude))
+      return { lat:gps.latitude, lon:gps.longitude };
+  }catch(e){ /* library blocked or no exif — fall through */ }
+  return null;
+}
+
+/* ===================== app state & wiring ===================== */
+const $ = id => document.getElementById(id);
+const view = $('view'), ctx = view.getContext('2d');
+
+const state = {
+  photo:null, lat:null, lon:null,
+  grid:null, contours:[],
+  scale:4, minEl:0, interval:25,
+  color:'#ffffff', weight:0.8, opacity:1,
+  hSize:0.60, vSize:0.45
+};
+
+let fetchToken = 0;
+let effInterval = null;   // interval actually used (widened from requested if range is large)
+
+function setStatus(text, {busy=false, warn=false}={}){
+  const s=$('status');
+  if (text===null){ s.classList.remove('show'); return; }
+  s.classList.toggle('warn', warn);
+  $('spin').style.display = busy ? 'block' : 'none';
+  $('statusText').textContent = text;
+  s.classList.add('show');
+}
+
+let heic2any = null;
+async function heicToJpeg(file){
+  if (!heic2any) heic2any = (await import('https://cdn.jsdelivr.net/npm/heic2any@0.0.4/+esm')).default;
+  const out = await heic2any({ blob:file, toType:'image/jpeg', quality:0.92 });
+  return Array.isArray(out) ? out[0] : out;   // multi-image HEIC → take the primary frame
+}
+
+async function loadImageFile(file){
+  const name = (file.name||'').toLowerCase();
+  const isHeic = /image\/hei[cf]/.test(file.type) || /\.(heic|heif)$/.test(name);
+  let displayBlob = file;                       // original file feeds GPS; display uses the (converted) blob
+  if (isHeic){
+    setStatus('Converting HEIC…',{busy:true});
+    try{ displayBlob = await heicToJpeg(file); }
+    catch(e){ setStatus('Couldn’t convert that HEIC — export it as JPEG, or enter coordinates under Location.',{warn:true}); return; }
+  }
+  const url = URL.createObjectURL(displayBlob);
+  const img = new Image();
+  img.onerror = ()=>{ URL.revokeObjectURL(url); setStatus('Couldn’t read that image — try a JPEG or PNG.',{warn:true}); };
+  img.onload = async ()=>{
+    // cap very large photos to keep memory/redraw snappy
+    const cap = 2400, sc = Math.min(1, cap/Math.max(img.naturalWidth,img.naturalHeight));
+    view.width = Math.round(img.naturalWidth*sc);
+    view.height = Math.round(img.naturalHeight*sc);
+    state.photo = img;
+    $('dropzone').style.display='none';
+    $('frame').style.display='block';
+    $('download').disabled=false;
+    URL.revokeObjectURL(url);
+
+    setStatus('Reading location…',{busy:true});
+    const gps = await readGPS(file);
+    if (gps){
+      state.lat=gps.lat; state.lon=gps.lon;
+      $('lat').value=gps.lat.toFixed(6);
+      $('lon').value=gps.lon.toFixed(6);
+      apply('geo');
+    } else {
+      draw();
+      setStatus('No location in this photo — enter coordinates under Location.',{warn:true});
+    }
+  };
+  img.src=url;
+}
+
+/* ---- the dispatcher: geo → contour → draw ---- */
+async function apply(reason){
+  if (!state.photo) return;
+
+  if (reason==='geo'){
+    if (state.lat===null || state.lon===null){ draw(); return; }
+    const token = ++fetchToken;
+    setStatus('Fetching terrain…',{busy:true});
+    try{
+      const grid = await buildGrid(state.lat, state.lon, state.scale);
+      if (token!==fetchToken) return;               // a newer request supersedes this one
+      state.grid = grid;
+      reason='contour';
+    }catch(err){
+      if (token!==fetchToken) return;
+      state.grid=null; state.contours=[]; draw();
+      const cors = /tile/.test(err.message);
+      setStatus(cors ? 'Could not load terrain tiles (network or CORS). Try again or host your own tiles.'
+                     : err.message, {warn:true});
+      return;
+    }
+  }
+
+  if (reason==='contour'){
+    if (!state.grid){ draw(); return; }
+    state.contours = await makeContours(state.grid, state.minEl, state.interval);
+  }
+
+  draw();
+  updateReadout();
+  if (state.grid){
+    if (!state.contours.length)
+      setStatus(`No terrain above ${state.minEl} m here — lower the minimum or widen the area.`,{warn:true});
+    else if (effInterval && effInterval !== state.interval)
+      setStatus(`Showing lines every ${effInterval} m — widened from ${state.interval} m so the peaks stay covered.`);
+    else
+      setStatus(null);
+  }
+}
+
+/* ---- render photo + contour overlay to any context/size ---- */
+function renderTo(c2d, W, H){
+  c2d.clearRect(0,0,W,H);
+  c2d.drawImage(state.photo,0,0,W,H);
+  const g=state.grid, feats=state.contours;
+  if (!g || !feats.length) return;
+
+  const boxW=W*state.hSize, boxH=H*state.vSize;
+  const boxX=(W-boxW)/2,    boxY=(H-boxH)/2;
+  const sx=boxW/g.gw, sy=boxH/g.gh;
+  const onEdge=(x,y)=> x<=0.5||y<=0.5||x>=g.gw-0.5||y>=g.gh-0.5;
+
+  const path=new Path2D();
+  for (const f of feats){
+    for (const poly of f.coordinates){
+      for (const ring of poly){
+        for (let k=0;k<ring.length;k++){
+          const [gx,gy]=ring[k];
+          const X=boxX+gx*sx, Y=boxY+gy*sy;
+          if (k===0){ path.moveTo(X,Y); continue; }
+          const [pgx,pgy]=ring[k-1];
+          // lift the pen across segments that lie on the capture boundary,
+          // so contours read as open lines instead of a boxed-in frame
+          if (onEdge(gx,gy) && onEdge(pgx,pgy)) path.moveTo(X,Y);
+          else path.lineTo(X,Y);
+        }
+      }
+    }
+  }
+  // scale stroke with output size so a full-res export matches the preview's look
+  const lineScale = W / view.width;
+  c2d.save();
+  c2d.globalAlpha=state.opacity;
+  c2d.strokeStyle=state.color;
+  c2d.lineWidth=state.weight*lineScale;
+  c2d.lineJoin='round'; c2d.lineCap='round';
+  c2d.stroke(path);
+  c2d.restore();
+}
+
+function draw(){ if (state.photo) renderTo(ctx, view.width, view.height); }
+
+function updateReadout(){
+  if (!state.grid) return;
+  $('readout').classList.add('show');
+  $('rCenter').textContent = `${state.lat.toFixed(4)}, ${state.lon.toFixed(4)}`;
+  $('rRange').textContent  = `${Math.round(state.grid.min)} – ${Math.round(state.grid.max)} m`;
+  $('rCount').textContent  = state.contours.length;
+  $('rZoom').textContent   = `z${state.grid.z}`;
+}
+
+/* ---- suggest a sensible contour interval from the terrain range ---- */
+function suggestInterval(){
+  if (!state.grid) return;
+  const span=Math.max(1, state.grid.max-state.minEl);
+  const raw=span/12;
+  const nice=[5,10,25,50,100,150,200,250];
+  const v=nice.find(n=>n>=raw)||250;
+  state.interval=v; $('interval').value=v; $('intervalV').textContent=v;
+}
+
+/* ===================== events ===================== */
+// debounce helper for the network-touching control (capture area)
+let t=null;
+const debounce=(fn,ms=260)=>(...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),ms);};
+
+// file input + drag/drop
+const fileInput=$('file');
+$('changeImg').onclick=()=>fileInput.click();
+$('dropzone').onclick=()=>fileInput.click();
+fileInput.onchange=e=>{ if(e.target.files[0]) loadImageFile(e.target.files[0]); };
+
+const dz=$('dropzone'), stage=$('stage');
+['dragenter','dragover'].forEach(ev=>stage.addEventListener(ev,e=>{e.preventDefault();dz.classList.add('hot');}));
+['dragleave','drop'].forEach(ev=>stage.addEventListener(ev,e=>{e.preventDefault();dz.classList.remove('hot');}));
+stage.addEventListener('drop',e=>{
+  const f=[...e.dataTransfer.files].find(f=>f.type.startsWith('image/'));
+  if (f) loadImageFile(f);
+});
+
+// location apply
+$('applyLoc').onclick=()=>{
+  const la=parseFloat($('lat').value), lo=parseFloat($('lon').value);
+  if (!Number.isFinite(la)||!Number.isFinite(lo)||la<-90||la>90||lo<-180||lo>180){
+    setStatus('Enter a valid latitude (−90…90) and longitude (−180…180).',{warn:true}); return;
+  }
+  state.lat=la; state.lon=lo;
+  apply('geo').then(suggestIntervalOnce);
+};
+
+// first successful grid → suggest an interval once
+let intervalSuggested=false;
+function suggestIntervalOnce(){
+  if (!intervalSuggested && state.grid){ suggestInterval(); intervalSuggested=true; apply('contour'); }
+}
+
+// terrain controls
+$('scale').oninput=e=>{ state.scale=+e.target.value; $('scaleV').textContent=state.scale.toFixed(1); };
+$('scale').addEventListener('input', debounce(()=>apply('geo')));
+$('minEl').oninput=e=>{ state.minEl=+e.target.value; $('minElV').textContent=state.minEl; };
+$('minEl').addEventListener('input', debounce(()=>apply('contour'),140));
+$('interval').oninput=e=>{ state.interval=+e.target.value; $('intervalV').textContent=state.interval; };
+$('interval').addEventListener('input', debounce(()=>apply('contour'),140));
+
+// line controls — pure redraw
+$('color').oninput=e=>{ state.color=e.target.value; draw(); };
+document.querySelectorAll('.preset').forEach(b=>b.onclick=()=>{ state.color=b.dataset.c; $('color').value=b.dataset.c; draw(); });
+$('weight').oninput=e=>{ state.weight=+e.target.value; $('weightV').textContent=state.weight.toFixed(1); draw(); };
+$('opacity').oninput=e=>{ state.opacity=+e.target.value/100; $('opacityV').textContent=e.target.value; draw(); };
+$('hSize').oninput=e=>{ state.hSize=+e.target.value/100; $('hSizeV').textContent=e.target.value; draw(); };
+$('vSize').oninput=e=>{ state.vSize=+e.target.value/100; $('vSizeV').textContent=e.target.value; draw(); };
+
+// download — render at the photo's native resolution, not the capped preview size
+$('download').onclick=()=>{
+  if (!state.photo) return;
+  const W=state.photo.naturalWidth, H=state.photo.naturalHeight;
+  const off=document.createElement('canvas');
+  off.width=W; off.height=H;
+  renderTo(off.getContext('2d'), W, H);
+  off.toBlob(b=>{
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(b);
+    a.download='relief.png';
+    a.click();
+    setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  },'image/png');
+};
+</script>
+</body>
+</html>
