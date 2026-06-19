@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Let Me Claude That For You</title>
+<meta name="description" content="Type a question and send it straight to Claude.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Inter:wght@400;450;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23F0EEE6'/%3E%3Cg fill='%23D97757'%3E%3Cpath d='M16 4 L17.4 13 L16 16 L14.6 13 Z'/%3E%3Cpath d='M16 28 L14.6 19 L16 16 L17.4 19 Z'/%3E%3Cpath d='M4 16 L13 14.6 L16 16 L13 17.4 Z'/%3E%3Cpath d='M28 16 L19 17.4 L16 16 L19 14.6 Z'/%3E%3Cpath d='M7.5 7.5 L14 13 L16 16 L13 14 Z'/%3E%3Cpath d='M24.5 24.5 L18 19 L16 16 L19 18 Z'/%3E%3Cpath d='M24.5 7.5 L18 13 L16 16 L19 14 Z'/%3E%3Cpath d='M7.5 24.5 L14 19 L16 16 L13 18 Z'/%3E%3C/g%3E%3C/svg%3E">
+<style>
+  :root{
+    --bg:#F0EEE6;
+    --surface:#FAF9F5;
+    --surface-2:#FFFFFF;
+    --text:#1F1E1D;
+    --muted:#83827B;
+    --muted-2:#6B6A63;
+    --accent:#D97757;
+    --accent-deep:#C2613F;
+    --line:rgba(31,30,29,.10);
+    --line-strong:rgba(31,30,29,.18);
+    --maxw:720px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:"Inter",system-ui,sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    min-height:100dvh;
+  }
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
+
+  /* ---------- header ---------- */
+  header{padding:26px 0 0}
+  .brand{display:flex;align-items:center;gap:11px;font-weight:500;letter-spacing:-.01em}
+  .brand svg{display:block}
+  .brand .name{font-size:15px}
+  .brand .name b{font-weight:600}
+
+  /* ---------- generator / hero ---------- */
+  .stage{display:none}
+  .stage.on{display:block}
+  main{padding:54px 0 40px}
+  h1{
+    font-family:"Newsreader",Georgia,serif;
+    font-weight:500;
+    font-size:clamp(36px,7.4vw,62px);
+    line-height:1.04;
+    letter-spacing:-.018em;
+    margin:0 0 20px;
+  }
+  h1 .em{color:var(--accent);font-style:italic}
+  .lede{font-size:clamp(16px,2.4vw,18.5px);color:var(--muted-2);max-width:31em;margin:0 0 36px}
+
+  .composer{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:8px;
+    box-shadow:0 2px 1px rgba(31,30,29,.04), 0 12px 32px -18px rgba(31,30,29,.22);
+  }
+  .composer-inner{
+    background:var(--surface-2);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:16px 18px 12px;
+  }
+  .composer label{display:block;font-size:12.5px;color:var(--muted);letter-spacing:.01em;margin-bottom:10px}
+  #q{
+    width:100%;border:0;background:transparent;color:var(--text);resize:none;
+    font-family:"Inter",sans-serif;font-size:17px;line-height:1.5;
+    min-height:52px;outline:none;
+  }
+  #q::placeholder{color:#B6B4AB}
+  .composer-bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:8px 6px 4px}
+  .opt{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--muted)}
+  .seg{display:inline-flex;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:3px}
+  .seg button{
+    appearance:none;border:0;background:transparent;color:var(--muted-2);
+    font-family:inherit;font-size:12.5px;font-weight:500;cursor:pointer;
+    padding:5px 11px;border-radius:7px;transition:.15s;
+  }
+  .seg button[aria-pressed="true"]{background:var(--surface-2);color:var(--text);box-shadow:0 1px 2px rgba(31,30,29,.08)}
+  .generate{
+    margin-left:auto;
+    appearance:none;border:0;cursor:pointer;
+    font-family:inherit;font-weight:500;font-size:15px;letter-spacing:-.005em;
+    background:var(--accent);color:#fff;
+    padding:11px 18px;border-radius:12px;
+    display:inline-flex;align-items:center;gap:9px;
+    transition:background .15s ease, transform .12s ease;
+  }
+  .generate:hover{background:var(--accent-deep)}
+  .generate:active{transform:translateY(1px)}
+
+  /* ---------- result ---------- */
+  .result{margin-top:18px;display:none;animation:rise .35s ease both}
+  .result.on{display:block}
+  @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .result .cap{font-size:13px;color:var(--muted-2);margin-bottom:10px}
+  .linkbox{
+    display:flex;align-items:stretch;gap:8px;
+    background:var(--surface);border:1px solid var(--line-strong);border-radius:13px;padding:8px;
+  }
+  #link{
+    flex:1;min-width:0;border:0;background:transparent;color:var(--accent-deep);
+    font-family:ui-monospace,"SFMono-Regular",Menlo,monospace;font-size:13px;padding:8px 10px;outline:none;
+    overflow-x:auto;white-space:nowrap;
+  }
+  .iconbtn{
+    appearance:none;border:1px solid var(--line);background:var(--surface-2);color:var(--text);
+    font-family:inherit;font-size:13px;font-weight:500;cursor:pointer;
+    padding:0 15px;border-radius:9px;white-space:nowrap;transition:.15s;
+  }
+  .iconbtn:hover{border-color:var(--line-strong);background:#fff}
+  .iconbtn.go{color:#fff;background:var(--accent);border-color:transparent}
+  .iconbtn.go:hover{background:var(--accent-deep)}
+  .result-actions{display:flex;gap:8px;margin-top:11px}
+
+  /* ---------- how it works ---------- */
+  .how{margin-top:56px;border-top:1px solid var(--line);padding-top:28px;display:grid;gap:20px}
+  @media(min-width:620px){.how{grid-template-columns:repeat(3,1fr);gap:28px}}
+  .step .n{font-family:"Newsreader",serif;font-size:22px;color:var(--accent);font-style:italic;line-height:1}
+  .step h3{font-size:15px;font-weight:600;margin:10px 0 5px;letter-spacing:-.01em}
+  .step p{font-size:13.5px;color:var(--muted-2);margin:0;line-height:1.5}
+
+  footer{padding:34px 0 46px;color:var(--muted);font-size:12px;border-top:1px solid var(--line);margin-top:42px}
+  footer .code{font-family:ui-monospace,Menlo,monospace}
+
+  /* ---------- playback ---------- */
+  #play{min-height:100dvh;display:none;flex-direction:column;justify-content:center;padding:40px 0}
+  #play.on{display:flex}
+  .chat{
+    background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:10px;
+    box-shadow:0 2px 1px rgba(31,30,29,.04), 0 18px 48px -22px rgba(31,30,29,.3);
+  }
+  .chat-field{
+    background:var(--surface-2);border:1px solid var(--line);border-radius:18px;
+    padding:18px 18px;display:flex;align-items:flex-end;gap:14px;min-height:80px;
+  }
+  .typed{
+    flex:1;font-family:"Inter",sans-serif;font-size:17px;line-height:1.5;
+    color:var(--text);word-break:break-word;
+  }
+  .caret{display:inline-block;width:2px;height:1.05em;background:var(--accent);
+    margin-left:1px;vertical-align:-3px;animation:blink 1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+  .send{
+    flex:0 0 auto;width:40px;height:40px;border-radius:50%;
+    border:1px solid var(--line-strong);background:var(--surface);
+    display:grid;place-items:center;transition:.25s;
+  }
+  .send svg{stroke:var(--muted);transition:.25s}
+  .send.armed{background:var(--accent);border-color:transparent;animation:pulse 1.1s ease-out infinite}
+  .send.armed svg{stroke:#fff}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(217,119,87,.45)}100%{box-shadow:0 0 0 15px rgba(217,119,87,0)}}
+  .status{height:1.4em;margin:18px 2px 0;font-size:14px;color:var(--muted);transition:opacity .3s}
+  .play-actions{margin-top:14px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .gonow{
+    appearance:none;border:0;cursor:pointer;font-family:inherit;font-weight:500;font-size:15px;
+    background:var(--accent);color:#fff;padding:11px 19px;border-radius:12px;
+    display:inline-flex;align-items:center;gap:8px;transition:background .15s,transform .12s;
+  }
+  .gonow:hover{background:var(--accent-deep)}
+  .gonow:active{transform:translateY(1px)}
+  .back{color:var(--muted-2);font-size:13px;text-decoration:none;border-bottom:1px solid transparent}
+  .back:hover{color:var(--text);border-color:var(--line-strong)}
+
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+
+  @media (prefers-reduced-motion: reduce){
+    .caret{animation:none}
+    .send.armed{animation:none}
+    .result{animation:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true">
+        <rect width="32" height="32" rx="8" fill="#FAF9F5" stroke="rgba(31,30,29,.1)"/>
+        <g fill="#D97757">
+          <path d="M16 4 L17.4 13 L16 16 L14.6 13 Z"/>
+          <path d="M16 28 L14.6 19 L16 16 L17.4 19 Z"/>
+          <path d="M4 16 L13 14.6 L16 16 L13 17.4 Z"/>
+          <path d="M28 16 L19 17.4 L16 16 L19 14.6 Z"/>
+          <path d="M7.5 7.5 L14 13 L16 16 L13 14 Z"/>
+          <path d="M24.5 24.5 L18 19 L16 16 L19 18 Z"/>
+          <path d="M24.5 7.5 L18 13 L16 16 L19 14 Z"/>
+          <path d="M7.5 24.5 L14 19 L16 16 L13 18 Z"/>
+        </g>
+      </svg>
+      <span class="name">Let Me <b>Claude</b> That For You</span>
+    </div>
+  </header>
+
+  <!-- ============ GENERATOR ============ -->
+  <div class="stage on" id="gen">
+    <main>
+      <h1>Send a question <span class="em">straight to&nbsp;Claude.</span></h1>
+      <p class="lede">Type a question and get a shareable link. Open it and the question is typed into Claude automatically, then you&rsquo;re taken right there.</p>
+
+      <div class="composer">
+        <div class="composer-inner">
+          <label for="q">Your question</label>
+          <textarea id="q" rows="2" autocomplete="off" spellcheck="false"></textarea>
+        </div>
+        <div class="composer-bar">
+          <div class="opt">
+            <span>Open in</span>
+            <span class="seg" role="group" aria-label="Where the link opens">
+              <button type="button" data-target="web" aria-pressed="true">Claude on web</button>
+              <button type="button" data-target="app" aria-pressed="false">Desktop app</button>
+            </span>
+          </div>
+          <button class="generate" id="make" type="button">
+            Make the link
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="result" id="result">
+        <div class="cap">Your shareable link</div>
+        <div class="linkbox">
+          <input id="link" readonly aria-label="Your shareable link">
+          <button class="iconbtn" id="copy" type="button">Copy</button>
+        </div>
+        <div class="result-actions">
+          <button class="iconbtn go" id="preview" type="button">Preview &rarr;</button>
+        </div>
+      </div>
+
+      <section class="how">
+        <div class="step">
+          <div class="n">01</div>
+          <h3>Type the question</h3>
+          <p>Whatever you want to ask Claude.</p>
+        </div>
+        <div class="step">
+          <div class="n">02</div>
+          <h3>Share the link</h3>
+          <p>Send it to anyone, or keep it for yourself. No app or account needed.</p>
+        </div>
+        <div class="step">
+          <div class="n">03</div>
+          <h3>It opens in Claude</h3>
+          <p>The question is typed in automatically, then you&rsquo;re taken to Claude.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- ============ PLAYBACK ============ -->
+  <div class="stage" id="play">
+    <div class="chat">
+      <div class="chat-field">
+        <div class="typed" id="typed"></div>
+        <div class="send" id="send" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
+        </div>
+      </div>
+    </div>
+    <div class="status" id="status"></div>
+    <div class="play-actions">
+      <button class="gonow" id="gonow" type="button">
+        Take me to Claude
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </button>
+      <a class="back" href="?">Make your own</a>
+    </div>
+  </div>
+
+  <footer>
+    Not affiliated with Anthropic. The link opens <span class="code">claude.ai</span> with the question ready to send.
+  </footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function targetUrl(question, app){
+    var base = app ? "claude://claude.ai/new?q=" : "https://claude.ai/new?q=";
+    return base + encodeURIComponent(question);
+  }
+
+  var params = new URLSearchParams(location.search);
+  var q = params.get("q");
+  var app = params.get("app") === "1";
+
+  if (q && q.trim()) { runPlayback(q, app); }
+  else { initGenerator(); }
+
+  /* ---------------- GENERATOR ---------------- */
+  function initGenerator(){
+    var field   = document.getElementById("q");
+    var make    = document.getElementById("make");
+    var result  = document.getElementById("result");
+    var linkEl  = document.getElementById("link");
+    var copyBtn = document.getElementById("copy");
+    var preview = document.getElementById("preview");
+    var seg     = document.querySelectorAll(".seg button");
+    var mode    = "web";
+
+    var examples = [
+      "how do I screenshot on a mac",
+      "what's the weather in melbourne tomorrow",
+      "write a thank-you email for me",
+      "what's a good gluten-free beer",
+      "how do I center a div",
+      "is the manaslu circuit open in november"
+    ];
+    var ei = 0, ci = 0, deleting = false;
+    function tickPlaceholder(){
+      if (field.value) { field.placeholder = "type the question\u2026"; return; }
+      var word = examples[ei];
+      field.placeholder = word.slice(0, ci) + (ci < word.length || deleting ? "\u2588" : "");
+      if (!deleting && ci < word.length) { ci++; setTimeout(tickPlaceholder, 55); }
+      else if (!deleting) { deleting = true; setTimeout(tickPlaceholder, 1400); }
+      else if (ci > 0) { ci--; setTimeout(tickPlaceholder, 28); }
+      else { deleting = false; ei = (ei + 1) % examples.length; setTimeout(tickPlaceholder, 350); }
+    }
+    if (!reduce) tickPlaceholder(); else field.placeholder = "type the question\u2026";
+
+    seg.forEach(function(b){
+      b.addEventListener("click", function(){
+        seg.forEach(function(x){ x.setAttribute("aria-pressed","false"); });
+        b.setAttribute("aria-pressed","true");
+        mode = b.dataset.target;
+        if (result.classList.contains("on")) build();
+      });
+    });
+
+    function build(){
+      var question = field.value.trim();
+      if (!question){ field.focus(); return; }
+      var url = location.origin + location.pathname + "?q=" + encodeURIComponent(question) + (mode === "app" ? "&app=1" : "");
+      linkEl.value = url;
+      result.classList.add("on");
+      copyBtn.textContent = "Copy";
+    }
+
+    make.addEventListener("click", build);
+    field.addEventListener("keydown", function(e){
+      if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) { e.preventDefault(); build(); }
+    });
+
+    copyBtn.addEventListener("click", function(){
+      var done = function(){ copyBtn.textContent = "Copied!"; setTimeout(function(){ copyBtn.textContent = "Copy"; }, 1600); };
+      if (navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(linkEl.value).then(done, function(){ linkEl.select(); document.execCommand("copy"); done(); });
+      } else { linkEl.select(); document.execCommand("copy"); done(); }
+    });
+
+    preview.addEventListener("click", function(){ window.open(linkEl.value, "_blank", "noopener"); });
+  }
+
+  /* ---------------- PLAYBACK ---------------- */
+  function runPlayback(question, app){
+    document.getElementById("gen").classList.remove("on");
+    document.getElementById("play").classList.add("on");
+
+    var typed  = document.getElementById("typed");
+    var send   = document.getElementById("send");
+    var status = document.getElementById("status");
+    var gonow  = document.getElementById("gonow");
+    var dest   = targetUrl(question, app);
+
+    gonow.addEventListener("click", function(){ go(); });
+    var went = false;
+    function go(){ if (went) return; went = true; status.textContent = "Opening Claude\u2026"; window.location.href = dest; }
+
+    function caret(on){
+      var c = typed.querySelector(".caret");
+      if (on && !c){ c = document.createElement("span"); c.className = "caret"; typed.appendChild(c); }
+      if (!on && c){ c.remove(); }
+    }
+    function setText(t){ typed.textContent = t; caret(true); }
+
+    if (reduce){
+      setText(question);
+      send.classList.add("armed");
+      setTimeout(go, 1400);
+      return;
+    }
+
+    caret(true);
+    setTimeout(function(){
+      var i = 0;
+      (function type(){
+        if (i <= question.length){
+          setText(question.slice(0, i));
+          i++;
+          setTimeout(type, 34 + Math.random()*46 + (question[i-1] === " " ? 30 : 0));
+        } else {
+          send.classList.add("armed");
+          setTimeout(function(){
+            caret(false);
+            go();
+          }, 750);
+        }
+      })();
+    }, 450);
+  }
+})();
+</script>
+</body>
+</html>
